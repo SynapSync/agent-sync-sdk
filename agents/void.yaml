@@ -1,0 +1,5 @@
+name: void
+displayName: Void
+rootDir: .void
+detect:
+  - cwdDir: .void

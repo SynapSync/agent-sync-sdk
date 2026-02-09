@@ -1,0 +1,5 @@
+name: duo
+displayName: Duo
+rootDir: .duo
+detect:
+  - cwdDir: .duo

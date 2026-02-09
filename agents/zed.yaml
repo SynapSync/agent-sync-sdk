@@ -1,0 +1,5 @@
+name: zed
+displayName: Zed
+rootDir: .zed
+detect:
+  - cwdDir: .zed

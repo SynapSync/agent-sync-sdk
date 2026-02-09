@@ -1,0 +1,6 @@
+name: kiro-cli
+displayName: Kiro CLI
+localRoot: .agents
+globalRoot: ~/.kiro
+detect:
+  - homeDir: .kiro

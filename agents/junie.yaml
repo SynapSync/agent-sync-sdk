@@ -1,0 +1,6 @@
+name: junie
+displayName: Junie
+localRoot: .agents
+globalRoot: ~/.junie
+detect:
+  - homeDir: .junie

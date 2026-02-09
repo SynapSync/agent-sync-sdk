@@ -1,0 +1,5 @@
+name: replit
+displayName: Replit
+rootDir: .replit
+detect:
+  - cwdDir: .replit

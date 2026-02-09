@@ -1,0 +1,5 @@
+name: crush
+displayName: Crush
+rootDir: .crush
+detect:
+  - cwdDir: .crush

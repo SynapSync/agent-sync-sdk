@@ -1,0 +1,5 @@
+name: bolt
+displayName: Bolt
+rootDir: .bolt
+detect:
+  - cwdDir: .bolt

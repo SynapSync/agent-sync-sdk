@@ -1,0 +1,5 @@
+name: claude-code
+displayName: Claude Code
+rootDir: .claude
+detect:
+  - cwdDir: .claude

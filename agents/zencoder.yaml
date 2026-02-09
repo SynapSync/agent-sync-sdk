@@ -1,0 +1,5 @@
+name: zencoder
+displayName: ZenCoder
+rootDir: .zencoder
+detect:
+  - cwdDir: .zencoder

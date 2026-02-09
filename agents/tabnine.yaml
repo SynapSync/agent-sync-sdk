@@ -1,0 +1,5 @@
+name: tabnine
+displayName: Tabnine
+rootDir: .tabnine
+detect:
+  - cwdDir: .tabnine

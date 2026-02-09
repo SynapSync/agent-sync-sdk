@@ -1,0 +1,6 @@
+name: goose
+displayName: Goose
+localRoot: .agents
+globalRoot: ~/.goose
+detect:
+  - homeDir: .goose

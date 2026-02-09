@@ -1,0 +1,5 @@
+name: lovable
+displayName: Lovable
+rootDir: .lovable
+detect:
+  - cwdDir: .lovable

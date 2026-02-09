@@ -1,0 +1,5 @@
+name: sweep
+displayName: Sweep
+rootDir: .sweep
+detect:
+  - cwdDir: .sweep

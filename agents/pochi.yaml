@@ -1,0 +1,5 @@
+name: pochi
+displayName: Pochi
+rootDir: .pochi
+detect:
+  - cwdDir: .pochi

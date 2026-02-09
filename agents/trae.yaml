@@ -1,0 +1,6 @@
+name: trae
+displayName: Trae
+localRoot: .agents
+globalRoot: ~/.trae
+detect:
+  - homeDir: .trae

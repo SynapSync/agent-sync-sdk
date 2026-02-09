@@ -1,0 +1,5 @@
+name: continue
+displayName: Continue
+rootDir: .continue
+detect:
+  - cwdDir: .continue

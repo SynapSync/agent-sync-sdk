@@ -1,0 +1,5 @@
+name: supermaven
+displayName: Supermaven
+rootDir: .supermaven
+detect:
+  - cwdDir: .supermaven

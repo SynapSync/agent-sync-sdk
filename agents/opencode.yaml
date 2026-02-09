@@ -1,0 +1,6 @@
+name: opencode
+displayName: OpenCode
+localRoot: .agents
+globalRoot: ~/.opencode
+detect:
+  - homeDir: .opencode

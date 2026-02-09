@@ -1,0 +1,5 @@
+name: qoder
+displayName: Qoder
+rootDir: .qoder
+detect:
+  - cwdDir: .qoder

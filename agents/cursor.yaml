@@ -1,0 +1,5 @@
+name: cursor
+displayName: Cursor
+rootDir: .cursor
+detect:
+  - cwdDir: .cursor
