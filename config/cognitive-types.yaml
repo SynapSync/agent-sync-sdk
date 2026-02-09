@@ -1,0 +1,15 @@
+- type: skill
+  subdir: skills
+  fileName: SKILL.md
+
+- type: agent
+  subdir: agents
+  fileName: AGENT.md
+
+- type: prompt
+  subdir: prompts
+  fileName: PROMPT.md
+
+- type: rule
+  subdir: rules
+  fileName: RULE.md

@@ -1,0 +1,5 @@
+name: devin
+displayName: Devin
+rootDir: .devin
+detect:
+  - cwdDir: .devin

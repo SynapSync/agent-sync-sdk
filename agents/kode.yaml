@@ -1,0 +1,5 @@
+name: kode
+displayName: Kode
+rootDir: .kode
+detect:
+  - cwdDir: .kode

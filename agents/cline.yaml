@@ -1,0 +1,5 @@
+name: cline
+displayName: Cline
+rootDir: .cline
+detect:
+  - cwdDir: .cline

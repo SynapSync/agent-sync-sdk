@@ -1,0 +1,6 @@
+name: amp
+displayName: Amp
+localRoot: .agents
+globalRoot: ~/.amp
+detect:
+  - homeDir: .amp

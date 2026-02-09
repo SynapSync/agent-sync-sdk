@@ -1,0 +1,5 @@
+name: github-copilot
+displayName: GitHub Copilot
+rootDir: .github
+detect:
+  - cwdDir: .github

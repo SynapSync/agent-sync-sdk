@@ -1,0 +1,5 @@
+name: mcpjam
+displayName: MCPJam
+rootDir: .mcpjam
+detect:
+  - cwdDir: .mcpjam

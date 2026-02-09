@@ -1,0 +1,5 @@
+name: aider
+displayName: Aider
+rootDir: .aider
+detect:
+  - cwdDir: .aider

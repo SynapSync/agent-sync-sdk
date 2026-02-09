@@ -1,0 +1,6 @@
+name: augment
+displayName: Augment
+localRoot: .agents
+globalRoot: ~/.augment
+detect:
+  - homeDir: .augment

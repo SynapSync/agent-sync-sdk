@@ -1,0 +1,5 @@
+name: grit
+displayName: Grit
+rootDir: .grit
+detect:
+  - cwdDir: .grit

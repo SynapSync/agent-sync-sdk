@@ -1,0 +1,5 @@
+name: double
+displayName: Double
+rootDir: .double
+detect:
+  - cwdDir: .double

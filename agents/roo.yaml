@@ -1,0 +1,5 @@
+name: roo
+displayName: Roo
+rootDir: .roo
+detect:
+  - cwdDir: .roo

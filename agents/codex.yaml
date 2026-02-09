@@ -1,0 +1,6 @@
+name: codex
+displayName: Codex
+localRoot: .agents
+globalRoot: ~/.codex
+detect:
+  - homeDir: .codex

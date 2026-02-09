@@ -1,0 +1,6 @@
+name: adal
+displayName: Adal
+localRoot: .agents
+globalRoot: ~/.adal
+detect:
+  - homeDir: .adal
