@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Sprint 6: Operations
+- **Operation types** (`src/types/operations.ts`): All operation I/O types — `AddOptions/AddResult`, `RemoveOptions/RemoveResult`, `ListOptions/ListResult`, `FindOptions/FindResult`, `UpdateOptions/UpdateResult`, `SyncOptions/SyncResult`, `CheckOptions/CheckResult`, `InitOptions/InitResult`, plus supporting types (`InstalledCognitiveInfo`, `AvailableCognitive`, `SourceInfo`, `SyncIssue`, `CheckIssue`, etc.)
+- **Operation context** (`src/operations/context.ts`): `OperationContext` interface wiring all services (agentRegistry, providerRegistry, sourceParser, gitClient, discoveryService, installer, lockManager, eventBus, config)
+- **Add operation** (`src/operations/add.ts`): `AddOperation` — two-phase workflow: parse source → resolve cognitives (local discovery, provider fetch, or git clone fallback) → apply filters → return available list if unconfirmed → install each cognitive × each agent → record in lock
+- **Remove operation** (`src/operations/remove.ts`): `RemoveOperation` — lookup lock entries, remove from each agent via installer, remove lock entry
+- **List operation** (`src/operations/list.ts`): `ListOperation` — read all lock entries, filter by cognitiveType, sort by name
+- **Find operation** (`src/operations/find.ts`): `FindOperation` — parse source, fetch via provider, cross-reference with lock for installed flag, apply limit
+- **Update operation** (`src/operations/update.ts`): `UpdateOperation` — re-fetch remote content, compare content hashes, apply updates if confirmed (remove + reinstall per installed agent)
+- **Sync operation** (`src/operations/sync.ts`): `SyncOperation` — check canonical paths exist, verify content hashes, report `SyncIssue[]` (missing_files, lock_mismatch)
+- **Check operation** (`src/operations/check.ts`): `CheckOperation` — check canonical paths and hashes, report `CheckIssue[]` with severity (error/warning)
+- **Init operation** (`src/operations/init.ts`): `InitOperation` — sanitize name, create directory + template file with YAML frontmatter
+- Operation tests: 66 tests across 8 test files (add, remove, list, find, update, sync, check, init)
+
 #### Sprint 5: Installation & Persistence
 - **Installer service** (`src/installer/service.ts`): `InstallerImpl` — unified installer for local, remote, and well-known cognitives; supports symlink mode with automatic copy fallback; emits `install:start`, `install:symlink`, `install:copy`, `install:complete` events
 - **Symlink support** (`src/installer/symlink.ts`): `createSymlink()` — relative symlinks, ELOOP detection, existing entry handling, skip when paths resolve to same location
