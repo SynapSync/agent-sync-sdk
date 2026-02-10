@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Sprint 5: Installation & Persistence
+- **Installer service** (`src/installer/service.ts`): `InstallerImpl` — unified installer for local, remote, and well-known cognitives; supports symlink mode with automatic copy fallback; emits `install:start`, `install:symlink`, `install:copy`, `install:complete` events
+- **Symlink support** (`src/installer/symlink.ts`): `createSymlink()` — relative symlinks, ELOOP detection, existing entry handling, skip when paths resolve to same location
+- **Copy mode** (`src/installer/copy.ts`): `deepCopy()` — recursive directory copy with `Promise.all` parallelism, excludes `_*`, `.git/`, `README.md`, `metadata.json`
+- **Path resolution** (`src/installer/paths.ts`): `getCanonicalPath()` (`.agents/cognit/<type>/<category>/<name>/`), `getAgentInstallPath()` (flattened agent dirs), `findProjectRoot()` (walks up for `.agents/cognit`, `.git`, `package.json`), `getGlobalBase()` (XDG on Linux, `~/.agents/cognit` on macOS, `%APPDATA%\cognit` on Windows)
+- **Security** (`src/installer/security.ts`): `sanitizeName()` (kebab-case, 255 char limit, path traversal rejection), `isPathSafe()` (containment check via `path.resolve`)
+- **Atomic writes** (`src/installer/atomic.ts`): `atomicWriteFile()` — temp-file-then-rename with unique counter to prevent parallel collisions
+- **Rollback engine** (`src/installer/rollback.ts`): LIFO rollback of `InstallAction[]` with 6 action types, best-effort recovery
+- **Category flattening** (`src/installer/flatten.ts`): `shouldSkipSymlink()` for universal agents, `getAgentSymlinkPaths()` for non-universal agents
+- **Lock file manager** (`src/lock/manager.ts`): `LockFileManagerImpl` — full CRUD: `read()`, `write()`, `addEntry()`, `removeEntry()`, `getEntry()`, `getAllEntries()`, `getBySource()`, `getLastSelectedAgents()`, `saveLastSelectedAgents()`
+- **Lock schema** (`src/lock/schema.ts`): v5 format with composite keys (`{type}:{name}`), `makeLockKey()`, `parseLockKey()`, `createEmptyLockFile()`, runtime validation
+- **Lock migration** (`src/lock/migration.ts`): `readWithMigration()` — v3 → v5 (skills → cognitives), v4 → v5 (add composite keys), graceful fallback to empty on corruption
+- **Integrity hashing** (`src/lock/integrity.ts`): SHA-256 `computeContentHash()`, `verifyContentHash()`, `computeDirectoryHash()` (sorted file order)
+- **Atomic lock writes** (`src/lock/atomic.ts`): `writeLockFileAtomic()` — JSON with 2-space indent, temp+rename, cleanup on failure
+- Installer tests: 41 tests across 5 test files (security, paths, copy, rollback, installer)
+- Lock tests: 37 tests across 5 test files (schema, integrity, migration, manager, atomic)
+
 #### Sprint 4: Providers
 - **Provider registry** (`src/providers/registry.ts`): `ProviderRegistryImpl` with ordered first-match-wins lookup, duplicate id rejection
 - **GitHub provider** (`src/providers/github.ts`): `GitHubProvider` — matches GitHub URLs and `owner/repo` shorthands, clone via `GitClient`, discover cognitives, convert to `RemoteCognitive[]`, blob-to-raw URL conversion
