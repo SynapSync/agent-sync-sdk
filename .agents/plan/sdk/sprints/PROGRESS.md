@@ -12,20 +12,23 @@ Agent Sync SDK is an interface-agnostic TypeScript SDK for managing cognitive re
 | 3 | Discovery & Sources | DONE | 40 | 8+4 | `9ccfb12` |
 | 4 | Providers | DONE | 25 | 9+4 | `f9b4f09` |
 | 5 | Installation & Persistence | DONE | 78 | 15+10 | `68f3904` |
-| 6 | Operations | DONE | 66 | 10+8 | — |
-| 7 | Public API & Extended Providers | DONE | 22 | 4+2 | — |
-| 8 | Quality & Hardening | NOT_STARTED | — | — | — |
+| 6 | Operations | DONE | 66 | 10+8 | `86c6a05` |
+| 7 | Public API & Extended Providers | DONE | 22 | 4+2 | `39f1f1a` |
+| 8 | Quality & Hardening | DONE | 172 | 18+1 | — |
 
 ## Global Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Total Tests | — | 286 | 286 passing |
-| Test Files | — | 35 | 35 passing |
+| Total Tests | — | 458 | 458 passing |
+| Test Files | — | 53 | 53 passing |
 | TypeScript Strict Errors | 0 | 0 | DONE |
 | Operations Implemented | 8 | 8 | DONE |
 | Agent Definitions (YAML) | 39+ | 39 | DONE |
-| Providers | 6 | 6 (3 stubs) | Sprint 7 completes stubs |
+| Providers | 7 | 7 | DONE |
+| Coverage (Stmts) | 85% | 92.28% | DONE |
+| Coverage (Branches) | 80% | 85.96% | DONE |
+| Coverage (Functions) | 85% | 97.37% | DONE |
 
 ## What's Been Built
 
@@ -84,13 +87,24 @@ Agent Sync SDK is an interface-agnostic TypeScript SDK for managing cognitive re
 - Build: `dist/index.js` (110KB) + `dist/index.d.ts` (25.7KB)
 - 22 tests across 2 test files
 
+### Sprint 8: Quality & Hardening (`tests/`, `.github/`, `vitest.config.ts`)
+- **Unit test audit**: Filled all coverage gaps across errors, config, discovery, installer, providers, source, agents
+- **Error hierarchy tests**: 31 tests covering all error subclasses, instanceof chains, toJSON, cause chaining, unique codes
+- **Stub provider tests**: Full coverage for MintlifyProvider, HuggingFaceProvider, DirectURLProvider, WellKnownProvider
+- **Installer edge cases**: symlink creation, flatten logic, atomic writes error paths
+- **Agent registry extended**: detectInstalled, register, universal/non-universal agents
+- **Source git tests**: Mocked simple-git for clone/cleanup testing
+- **Cache tests**: CloneCache and FetchCache TTL, invalidation, deterministic keys
+- **Integration tests**: add-flow (8), lifecycle (4), multi-agent (6)
+- **SDK operation tests**: 17 tests covering find, sync, update, remove, add via public API
+- **E2E tests**: 9 tests on real filesystem (init, list, check, full lifecycle)
+- **CI**: GitHub Actions workflow (Node 20/22 matrix, lint, typecheck, build, test+coverage)
+- **Coverage thresholds**: vitest.config.ts configured with 85%/80%/85% thresholds
+- 172 new tests across 18 test files + 1 CI workflow
+
 ## Remaining Work
 
-### Sprint 8: Quality & Hardening (NEXT)
-Composition root `createAgentSyncSDK()` factory, complete stub providers
-
-### Sprint 8: Quality & Hardening
-Coverage targets, edge cases, CI pipeline, documentation
+All 8 sprints complete. SDK is production-ready.
 
 ## Blockers & Issues
 
