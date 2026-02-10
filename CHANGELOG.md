@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Sprint 7: Public API & Extended Providers
+- **SDK factory** (`src/sdk.ts`): `createAgentSyncSDK(userConfig?)` composition root — the only place concrete implementations are instantiated. Wires 6 architectural layers: Config/Events → Agents → Discovery/Providers → Installer/Lock → Operations → Facade
+- **AgentSyncSDK interface** (`src/sdk.ts`): Public contract with 8 operation methods (`add`, `remove`, `list`, `find`, `update`, `sync`, `check`, `init`), 4 accessors (`events`, `config`, `agents`, `providers`), event convenience methods (`on`, `once`), and `dispose()`
+- **Public API entry point** (`src/index.ts`): Exports `createAgentSyncSDK`, all consumer-facing types, error classes, result helpers, brand constructors, and FS adapters. Does NOT export internal implementations
+- **WellKnown provider** (`src/providers/wellknown.ts`): `WellKnownProvider` for RFC 8615 well-known endpoint discovery at `/.well-known/cognitives/index.json` with legacy `/.well-known/skills/` fallback
+- **Provider registration**: 7 providers registered in priority order: custom → GitHub → Local → Mintlify → HuggingFace → WellKnown → DirectURL (first-match-wins)
+- **Package build**: `tsup` produces `dist/index.js` (110KB) and `dist/index.d.ts` (25.7KB)
+- SDK + provider tests: 22 tests across 2 test files (sdk integration, wellknown provider)
+
 #### Sprint 6: Operations
 - **Operation types** (`src/types/operations.ts`): All operation I/O types — `AddOptions/AddResult`, `RemoveOptions/RemoveResult`, `ListOptions/ListResult`, `FindOptions/FindResult`, `UpdateOptions/UpdateResult`, `SyncOptions/SyncResult`, `CheckOptions/CheckResult`, `InitOptions/InitResult`, plus supporting types (`InstalledCognitiveInfo`, `AvailableCognitive`, `SourceInfo`, `SyncIssue`, `CheckIssue`, etc.)
 - **Operation context** (`src/operations/context.ts`): `OperationContext` interface wiring all services (agentRegistry, providerRegistry, sourceParser, gitClient, discoveryService, installer, lockManager, eventBus, config)

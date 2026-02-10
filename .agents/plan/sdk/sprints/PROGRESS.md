@@ -13,15 +13,15 @@ Agent Sync SDK is an interface-agnostic TypeScript SDK for managing cognitive re
 | 4 | Providers | DONE | 25 | 9+4 | `f9b4f09` |
 | 5 | Installation & Persistence | DONE | 78 | 15+10 | `68f3904` |
 | 6 | Operations | DONE | 66 | 10+8 | — |
-| 7 | Public API & Extended Providers | NOT_STARTED | — | — | — |
+| 7 | Public API & Extended Providers | DONE | 22 | 4+2 | — |
 | 8 | Quality & Hardening | NOT_STARTED | — | — | — |
 
 ## Global Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Total Tests | — | 264 | 264 passing |
-| Test Files | — | 33 | 33 passing |
+| Total Tests | — | 286 | 286 passing |
+| Test Files | — | 35 | 35 passing |
 | TypeScript Strict Errors | 0 | 0 | DONE |
 | Operations Implemented | 8 | 8 | DONE |
 | Agent Definitions (YAML) | 39+ | 39 | DONE |
@@ -75,9 +75,18 @@ Agent Sync SDK is an interface-agnostic TypeScript SDK for managing cognitive re
 - All operations return `Result<T, CognitError>`, emit `operation:start`/`operation:complete`/`operation:error` events
 - 66 tests across 8 test files
 
+### Sprint 7: Public API & Extended Providers (`src/sdk.ts`, `src/index.ts`, `src/providers/wellknown.ts`)
+- `createAgentSyncSDK()` factory: composition root wiring 6 layers
+- `AgentSyncSDK` interface: 8 operations, 4 accessors, on/once/dispose
+- Public `src/index.ts`: types, errors, result helpers, brand constructors, FS adapters
+- `WellKnownProvider`: RFC 8615 well-known endpoint discovery with legacy fallback
+- 7 providers in priority order: custom → GitHub → Local → Mintlify → HuggingFace → WellKnown → DirectURL
+- Build: `dist/index.js` (110KB) + `dist/index.d.ts` (25.7KB)
+- 22 tests across 2 test files
+
 ## Remaining Work
 
-### Sprint 7: Public API (NEXT)
+### Sprint 8: Quality & Hardening (NEXT)
 Composition root `createAgentSyncSDK()` factory, complete stub providers
 
 ### Sprint 8: Quality & Hardening
