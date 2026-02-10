@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Project Restructure & Documentation
+- **Documentation suite** (`docs/`): 8 comprehensive guides — Getting Started, API Reference, Type System, Providers, Events, Errors, Architecture, Agents
+- **README.md**: Complete rewrite with badges, quick start, supported agents table, cognitive types, documentation links
+- **Path restructure**: Moved build-time definitions to consolidate with their output:
+  - `agents/*.yaml` → `src/agents/definitions/*.yaml`
+  - `config/cognitive-types.yaml` → `src/agents/definitions/cognitive-types.yaml`
+  - `scripts/compile-agents.ts` → `src/agents/definitions/compile.ts`
+  - Removed empty root directories: `agents/`, `config/`, `scripts/`
+- **`examples/` directory**: Created for usage examples
+
 #### Sprint 8: Quality & Hardening
 - **Unit test audit**: Filled coverage gaps across all modules — errors (31 tests), config/categories (6), discovery/validator (7), installer/symlink (6), installer/flatten (7), installer/atomic (7)
 - **Provider coverage**: Full tests for MintlifyProvider (11), HuggingFaceProvider (10), DirectURLProvider (14), registerDefaultProviders (3), CloneCache/FetchCache extended (9)
@@ -103,7 +113,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **FileSystem adapter** (`src/fs/`): `NodeFileSystem` (production) and `InMemoryFileSystem` (testing) + `createMemoryFs(seed)` factory
 - **Agent system** (`src/agents/`):
   - 39 YAML agent definitions (10 universal, 29 non-universal)
-  - `compile-agents.ts` pipeline: YAML -> TypeScript code generation
+  - `src/agents/definitions/compile.ts` pipeline: YAML -> TypeScript code generation
   - `AgentRegistryImpl`: `getAll()`, `get()`, `getUniversalAgents()`, `isUniversal()`, `getDir()`, `detectInstalled()`, `register()`
 - Core systems tests: 30 tests across 4 test files
 

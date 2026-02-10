@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
-// scripts/compile-agents.ts
-// Reads agents/*.yaml and config/cognitive-types.yaml, generates TypeScript files
+// src/agents/definitions/compile.ts
+// Reads *.yaml definitions from this directory, generates TypeScript files
 // in src/agents/__generated__/.
 
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -45,17 +45,15 @@ interface ResolvedAgent {
 
 // ---------- Paths ----------
 
-const ROOT = join(import.meta.dirname ?? process.cwd(), '..');
-const AGENTS_DIR = join(ROOT, 'agents');
-const CONFIG_DIR = join(ROOT, 'config');
-const OUT_DIR = join(ROOT, 'src', 'agents', '__generated__');
+const DEFINITIONS_DIR = import.meta.dirname ?? join(process.cwd(), 'src', 'agents', 'definitions');
+const OUT_DIR = join(DEFINITIONS_DIR, '..', '__generated__');
 
 const HEADER = '// AUTO-GENERATED -- DO NOT EDIT\n';
 
 // ---------- Phase 1: Load and validate ----------
 
 function loadCognitiveTypes(): CognitiveTypeYaml[] {
-  const raw = readFileSync(join(CONFIG_DIR, 'cognitive-types.yaml'), 'utf-8');
+  const raw = readFileSync(join(DEFINITIONS_DIR, 'cognitive-types.yaml'), 'utf-8');
   const parsed = parse(raw) as CognitiveTypeYaml[];
   if (!Array.isArray(parsed) || parsed.length === 0) {
     throw new Error('cognitive-types.yaml must be a non-empty array');
@@ -69,12 +67,12 @@ function loadCognitiveTypes(): CognitiveTypeYaml[] {
 }
 
 function loadAgents(): AgentYaml[] {
-  const files = readdirSync(AGENTS_DIR).filter((f) => f.endsWith('.yaml')).sort();
+  const files = readdirSync(DEFINITIONS_DIR).filter((f) => f.endsWith('.yaml') && f !== 'cognitive-types.yaml').sort();
   const agents: AgentYaml[] = [];
   const seen = new Set<string>();
 
   for (const file of files) {
-    const raw = readFileSync(join(AGENTS_DIR, file), 'utf-8');
+    const raw = readFileSync(join(DEFINITIONS_DIR, file), 'utf-8');
     const agent = parse(raw) as AgentYaml;
     const expectedName = basename(file, '.yaml');
 
