@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Sprint 3: Discovery & Sources
+- **Discovery pipeline** (`src/discovery/`): 5 files
+  - `CognitiveScanner`: traverses directories finding cognitive files (SKILL.md, PROMPT.md, RULE.md, AGENT.md) with priority search (typed subdirs first, then flat), skips hidden dirs and node_modules, configurable maxDepth, deduplication
+  - `CognitiveParser`: extracts frontmatter with `gray-matter`, fallback name from dir name, fallback description from first content line, stores all metadata
+  - `CognitiveFilter`: filter by type, name pattern (substring), tags (intersection), category
+  - `CognitiveValidator`: validates name/type/path using `Result<T, E>` pattern
+  - `DiscoveryServiceImpl`: orchestrates scan -> parse -> validate -> filter pipeline with event emission (`discovery:start`, `discovery:found`, `discovery:complete`)
+- **Source resolution** (`src/source/`): 3 files
+  - `SourceParserImpl`: 12-step resolution chain (local path, direct URL, GitHub tree/repo, GitLab tree/repo, owner/repo@name shorthand, well-known URL, git fallback)
+  - `GitClientImpl`: shallow clone with `simple-git`, configurable depth/timeout/ref, temp directory management, event emission (`git:clone:start`, `git:clone:complete`, `git:clone:error`)
+- Discovery & source tests: 40 tests across 4 test files (scanner, parser, source parser, integration)
+
 ## [0.1.0] - 2026-02-09
 
 ### Added
