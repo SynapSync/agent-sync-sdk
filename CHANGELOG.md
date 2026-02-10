@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Sprint 4: Providers
+- **Provider registry** (`src/providers/registry.ts`): `ProviderRegistryImpl` with ordered first-match-wins lookup, duplicate id rejection
+- **GitHub provider** (`src/providers/github.ts`): `GitHubProvider` — matches GitHub URLs and `owner/repo` shorthands, clone via `GitClient`, discover cognitives, convert to `RemoteCognitive[]`, blob-to-raw URL conversion
+- **Local provider** (`src/providers/local.ts`): `LocalProvider` — matches local paths (absolute, relative, `.`), resolves relative to cwd, discovers cognitives via `DiscoveryService`
+- **Caching layer** (`src/providers/cache.ts`): `CloneCache` (SHA-256 keys, 1h TTL) + `FetchCache` (15min TTL), both backed by `FileSystemAdapter`
+- **Stub providers**: `MintlifyProvider`, `HuggingFaceProvider`, `DirectURLProvider` — interface-complete stubs for Sprint 7
+- **Registration** (`src/providers/register-defaults.ts`): `registerDefaultProviders()` with custom providers first, then built-in priority order
+- Provider tests: 25 tests across 4 test files (registry, github, local, cache)
+
 #### Sprint 3: Discovery & Sources
 - **Discovery pipeline** (`src/discovery/`): 5 files
   - `CognitiveScanner`: traverses directories finding cognitive files (SKILL.md, PROMPT.md, RULE.md, AGENT.md) with priority search (typed subdirs first, then flat), skips hidden dirs and node_modules, configurable maxDepth, deduplication
