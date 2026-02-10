@@ -19,7 +19,7 @@
     "build": "tsup",
     "test": "vitest",
     "test:run": "vitest run",
-    "compile-agents": "tsx scripts/compile-agents.ts",
+    "compile-agents": "tsx src/agents/definitions/compile.ts",
     "prebuild": "pnpm run compile-agents",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"
