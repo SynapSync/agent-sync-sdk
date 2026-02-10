@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+#### Sprint 8: Quality & Hardening
+- **Unit test audit**: Filled coverage gaps across all modules — errors (31 tests), config/categories (6), discovery/validator (7), installer/symlink (6), installer/flatten (7), installer/atomic (7)
+- **Provider coverage**: Full tests for MintlifyProvider (11), HuggingFaceProvider (10), DirectURLProvider (14), registerDefaultProviders (3), CloneCache/FetchCache extended (9)
+- **Agent registry extended**: detectInstalled, register, universal/non-universal agents, event emission (12 tests)
+- **Source git tests**: Mocked simple-git for clone/cleanup with event assertions (5 tests)
+- **SDK operation tests**: find, sync, update, remove, add via public API (17 tests)
+- **Integration tests**: add-flow (8), full lifecycle (4), multi-agent installation (6)
+- **E2E tests**: Real filesystem lifecycle with temp directories — init, list, check, full add→remove cycle (9 tests)
+- **CI workflow** (`.github/workflows/ci.yml`): GitHub Actions with Node 20/22 matrix, pnpm, compile-agents, typecheck, build, test+coverage
+- **Coverage thresholds** (`vitest.config.ts`): Statements 85%, branches 80%, functions 85%, lines 85% — all exceeded
+- **Final metrics**: 458 tests / 53 files, 92.28% stmts, 85.96% branches, 97.37% functions, 0 TS errors, 0 `any`, 0 `console.`, 0 `process.exit`
+
 #### Sprint 7: Public API & Extended Providers
 - **SDK factory** (`src/sdk.ts`): `createAgentSyncSDK(userConfig?)` composition root — the only place concrete implementations are instantiated. Wires 6 architectural layers: Config/Events → Agents → Discovery/Providers → Installer/Lock → Operations → Facade
 - **AgentSyncSDK interface** (`src/sdk.ts`): Public contract with 8 operation methods (`add`, `remove`, `list`, `find`, `update`, `sync`, `check`, `init`), 4 accessors (`events`, `config`, `agents`, `providers`), event convenience methods (`on`, `once`), and `dispose()`
