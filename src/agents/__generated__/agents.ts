@@ -24,12 +24,14 @@ export interface GeneratedAgentConfig {
 }
 
 export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
-  adal: {
+  'adal': {
     name: 'adal',
     displayName: 'Adal',
     localRoot: '.agents',
     globalRoot: '~/.adal',
-    detect: [{ homeDir: '.adal' }],
+    detect: [
+      { homeDir: '.adal' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.adal/skills' },
       agent: { local: '.agents/agents', global: '~/.adal/agents' },
@@ -37,12 +39,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.adal/rules' },
     },
   },
-  aider: {
+  'aider': {
     name: 'aider',
     displayName: 'Aider',
     localRoot: '.aider',
     globalRoot: '~/.aider',
-    detect: [{ cwdDir: '.aider' }],
+    detect: [
+      { cwdDir: '.aider' },
+    ],
     dirs: {
       skill: { local: '.aider/skills', global: '~/.aider/skills' },
       agent: { local: '.aider/agents', global: '~/.aider/agents' },
@@ -50,12 +54,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.aider/rules', global: '~/.aider/rules' },
     },
   },
-  amp: {
+  'amp': {
     name: 'amp',
     displayName: 'Amp',
     localRoot: '.agents',
     globalRoot: '~/.amp',
-    detect: [{ homeDir: '.amp' }],
+    detect: [
+      { homeDir: '.amp' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.amp/skills' },
       agent: { local: '.agents/agents', global: '~/.amp/agents' },
@@ -63,12 +69,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.amp/rules' },
     },
   },
-  augment: {
+  'augment': {
     name: 'augment',
     displayName: 'Augment',
     localRoot: '.agents',
     globalRoot: '~/.augment',
-    detect: [{ homeDir: '.augment' }],
+    detect: [
+      { homeDir: '.augment' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.augment/skills' },
       agent: { local: '.agents/agents', global: '~/.augment/agents' },
@@ -76,12 +84,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.augment/rules' },
     },
   },
-  bolt: {
+  'bolt': {
     name: 'bolt',
     displayName: 'Bolt',
     localRoot: '.bolt',
     globalRoot: '~/.bolt',
-    detect: [{ cwdDir: '.bolt' }],
+    detect: [
+      { cwdDir: '.bolt' },
+    ],
     dirs: {
       skill: { local: '.bolt/skills', global: '~/.bolt/skills' },
       agent: { local: '.bolt/agents', global: '~/.bolt/agents' },
@@ -94,7 +104,9 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
     displayName: 'Claude Code',
     localRoot: '.claude',
     globalRoot: '~/.claude',
-    detect: [{ cwdDir: '.claude' }],
+    detect: [
+      { cwdDir: '.claude' },
+    ],
     dirs: {
       skill: { local: '.claude/skills', global: '~/.claude/skills' },
       agent: { local: '.claude/agents', global: '~/.claude/agents' },
@@ -102,12 +114,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.claude/rules', global: '~/.claude/rules' },
     },
   },
-  cline: {
+  'cline': {
     name: 'cline',
     displayName: 'Cline',
     localRoot: '.cline',
     globalRoot: '~/.cline',
-    detect: [{ cwdDir: '.cline' }],
+    detect: [
+      { cwdDir: '.cline' },
+    ],
     dirs: {
       skill: { local: '.cline/skills', global: '~/.cline/skills' },
       agent: { local: '.cline/agents', global: '~/.cline/agents' },
@@ -115,12 +129,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.cline/rules', global: '~/.cline/rules' },
     },
   },
-  codex: {
+  'codex': {
     name: 'codex',
     displayName: 'Codex',
     localRoot: '.agents',
     globalRoot: '~/.codex',
-    detect: [{ homeDir: '.codex' }],
+    detect: [
+      { homeDir: '.codex' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.codex/skills' },
       agent: { local: '.agents/agents', global: '~/.codex/agents' },
@@ -128,12 +144,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.codex/rules' },
     },
   },
-  cody: {
+  'cody': {
     name: 'cody',
     displayName: 'Cody',
     localRoot: '.cody',
     globalRoot: '~/.cody',
-    detect: [{ cwdDir: '.cody' }],
+    detect: [
+      { cwdDir: '.cody' },
+    ],
     dirs: {
       skill: { local: '.cody/skills', global: '~/.cody/skills' },
       agent: { local: '.cody/agents', global: '~/.cody/agents' },
@@ -141,12 +159,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.cody/rules', global: '~/.cody/rules' },
     },
   },
-  continue: {
+  'continue': {
     name: 'continue',
     displayName: 'Continue',
     localRoot: '.continue',
     globalRoot: '~/.continue',
-    detect: [{ cwdDir: '.continue' }],
+    detect: [
+      { cwdDir: '.continue' },
+    ],
     dirs: {
       skill: { local: '.continue/skills', global: '~/.continue/skills' },
       agent: { local: '.continue/agents', global: '~/.continue/agents' },
@@ -154,12 +174,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.continue/rules', global: '~/.continue/rules' },
     },
   },
-  crush: {
+  'crush': {
     name: 'crush',
     displayName: 'Crush',
     localRoot: '.crush',
     globalRoot: '~/.crush',
-    detect: [{ cwdDir: '.crush' }],
+    detect: [
+      { cwdDir: '.crush' },
+    ],
     dirs: {
       skill: { local: '.crush/skills', global: '~/.crush/skills' },
       agent: { local: '.crush/agents', global: '~/.crush/agents' },
@@ -167,12 +189,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.crush/rules', global: '~/.crush/rules' },
     },
   },
-  cursor: {
+  'cursor': {
     name: 'cursor',
     displayName: 'Cursor',
     localRoot: '.cursor',
     globalRoot: '~/.cursor',
-    detect: [{ cwdDir: '.cursor' }],
+    detect: [
+      { cwdDir: '.cursor' },
+    ],
     dirs: {
       skill: { local: '.cursor/skills', global: '~/.cursor/skills' },
       agent: { local: '.cursor/agents', global: '~/.cursor/agents' },
@@ -180,12 +204,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.cursor/rules', global: '~/.cursor/rules' },
     },
   },
-  devin: {
+  'devin': {
     name: 'devin',
     displayName: 'Devin',
     localRoot: '.devin',
     globalRoot: '~/.devin',
-    detect: [{ cwdDir: '.devin' }],
+    detect: [
+      { cwdDir: '.devin' },
+    ],
     dirs: {
       skill: { local: '.devin/skills', global: '~/.devin/skills' },
       agent: { local: '.devin/agents', global: '~/.devin/agents' },
@@ -193,12 +219,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.devin/rules', global: '~/.devin/rules' },
     },
   },
-  double: {
+  'double': {
     name: 'double',
     displayName: 'Double',
     localRoot: '.double',
     globalRoot: '~/.double',
-    detect: [{ cwdDir: '.double' }],
+    detect: [
+      { cwdDir: '.double' },
+    ],
     dirs: {
       skill: { local: '.double/skills', global: '~/.double/skills' },
       agent: { local: '.double/agents', global: '~/.double/agents' },
@@ -206,12 +234,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.double/rules', global: '~/.double/rules' },
     },
   },
-  duo: {
+  'duo': {
     name: 'duo',
     displayName: 'Duo',
     localRoot: '.duo',
     globalRoot: '~/.duo',
-    detect: [{ cwdDir: '.duo' }],
+    detect: [
+      { cwdDir: '.duo' },
+    ],
     dirs: {
       skill: { local: '.duo/skills', global: '~/.duo/skills' },
       agent: { local: '.duo/agents', global: '~/.duo/agents' },
@@ -224,7 +254,9 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
     displayName: 'Gemini CLI',
     localRoot: '.agents',
     globalRoot: '~/.gemini',
-    detect: [{ homeDir: '.gemini' }],
+    detect: [
+      { homeDir: '.gemini' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.gemini/skills' },
       agent: { local: '.agents/agents', global: '~/.gemini/agents' },
@@ -237,7 +269,9 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
     displayName: 'GitHub Copilot',
     localRoot: '.github',
     globalRoot: '~/.github',
-    detect: [{ cwdDir: '.github' }],
+    detect: [
+      { cwdDir: '.github' },
+    ],
     dirs: {
       skill: { local: '.github/skills', global: '~/.github/skills' },
       agent: { local: '.github/agents', global: '~/.github/agents' },
@@ -245,12 +279,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.github/rules', global: '~/.github/rules' },
     },
   },
-  goose: {
+  'goose': {
     name: 'goose',
     displayName: 'Goose',
     localRoot: '.agents',
     globalRoot: '~/.goose',
-    detect: [{ homeDir: '.goose' }],
+    detect: [
+      { homeDir: '.goose' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.goose/skills' },
       agent: { local: '.agents/agents', global: '~/.goose/agents' },
@@ -258,12 +294,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.goose/rules' },
     },
   },
-  grit: {
+  'grit': {
     name: 'grit',
     displayName: 'Grit',
     localRoot: '.grit',
     globalRoot: '~/.grit',
-    detect: [{ cwdDir: '.grit' }],
+    detect: [
+      { cwdDir: '.grit' },
+    ],
     dirs: {
       skill: { local: '.grit/skills', global: '~/.grit/skills' },
       agent: { local: '.grit/agents', global: '~/.grit/agents' },
@@ -271,12 +309,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.grit/rules', global: '~/.grit/rules' },
     },
   },
-  junie: {
+  'junie': {
     name: 'junie',
     displayName: 'Junie',
     localRoot: '.agents',
     globalRoot: '~/.junie',
-    detect: [{ homeDir: '.junie' }],
+    detect: [
+      { homeDir: '.junie' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.junie/skills' },
       agent: { local: '.agents/agents', global: '~/.junie/agents' },
@@ -289,7 +329,9 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
     displayName: 'Kiro CLI',
     localRoot: '.agents',
     globalRoot: '~/.kiro',
-    detect: [{ homeDir: '.kiro' }],
+    detect: [
+      { homeDir: '.kiro' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.kiro/skills' },
       agent: { local: '.agents/agents', global: '~/.kiro/agents' },
@@ -297,12 +339,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.kiro/rules' },
     },
   },
-  kode: {
+  'kode': {
     name: 'kode',
     displayName: 'Kode',
     localRoot: '.kode',
     globalRoot: '~/.kode',
-    detect: [{ cwdDir: '.kode' }],
+    detect: [
+      { cwdDir: '.kode' },
+    ],
     dirs: {
       skill: { local: '.kode/skills', global: '~/.kode/skills' },
       agent: { local: '.kode/agents', global: '~/.kode/agents' },
@@ -310,12 +354,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.kode/rules', global: '~/.kode/rules' },
     },
   },
-  lovable: {
+  'lovable': {
     name: 'lovable',
     displayName: 'Lovable',
     localRoot: '.lovable',
     globalRoot: '~/.lovable',
-    detect: [{ cwdDir: '.lovable' }],
+    detect: [
+      { cwdDir: '.lovable' },
+    ],
     dirs: {
       skill: { local: '.lovable/skills', global: '~/.lovable/skills' },
       agent: { local: '.lovable/agents', global: '~/.lovable/agents' },
@@ -323,12 +369,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.lovable/rules', global: '~/.lovable/rules' },
     },
   },
-  mcpjam: {
+  'mcpjam': {
     name: 'mcpjam',
     displayName: 'MCPJam',
     localRoot: '.mcpjam',
     globalRoot: '~/.mcpjam',
-    detect: [{ cwdDir: '.mcpjam' }],
+    detect: [
+      { cwdDir: '.mcpjam' },
+    ],
     dirs: {
       skill: { local: '.mcpjam/skills', global: '~/.mcpjam/skills' },
       agent: { local: '.mcpjam/agents', global: '~/.mcpjam/agents' },
@@ -336,12 +384,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.mcpjam/rules', global: '~/.mcpjam/rules' },
     },
   },
-  mentat: {
+  'mentat': {
     name: 'mentat',
     displayName: 'Mentat',
     localRoot: '.mentat',
     globalRoot: '~/.mentat',
-    detect: [{ cwdDir: '.mentat' }],
+    detect: [
+      { cwdDir: '.mentat' },
+    ],
     dirs: {
       skill: { local: '.mentat/skills', global: '~/.mentat/skills' },
       agent: { local: '.mentat/agents', global: '~/.mentat/agents' },
@@ -349,12 +399,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.mentat/rules', global: '~/.mentat/rules' },
     },
   },
-  opencode: {
+  'opencode': {
     name: 'opencode',
     displayName: 'OpenCode',
     localRoot: '.agents',
     globalRoot: '~/.opencode',
-    detect: [{ homeDir: '.opencode' }],
+    detect: [
+      { homeDir: '.opencode' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.opencode/skills' },
       agent: { local: '.agents/agents', global: '~/.opencode/agents' },
@@ -362,12 +414,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.opencode/rules' },
     },
   },
-  pochi: {
+  'pochi': {
     name: 'pochi',
     displayName: 'Pochi',
     localRoot: '.pochi',
     globalRoot: '~/.pochi',
-    detect: [{ cwdDir: '.pochi' }],
+    detect: [
+      { cwdDir: '.pochi' },
+    ],
     dirs: {
       skill: { local: '.pochi/skills', global: '~/.pochi/skills' },
       agent: { local: '.pochi/agents', global: '~/.pochi/agents' },
@@ -375,12 +429,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.pochi/rules', global: '~/.pochi/rules' },
     },
   },
-  qoder: {
+  'qoder': {
     name: 'qoder',
     displayName: 'Qoder',
     localRoot: '.qoder',
     globalRoot: '~/.qoder',
-    detect: [{ cwdDir: '.qoder' }],
+    detect: [
+      { cwdDir: '.qoder' },
+    ],
     dirs: {
       skill: { local: '.qoder/skills', global: '~/.qoder/skills' },
       agent: { local: '.qoder/agents', global: '~/.qoder/agents' },
@@ -388,12 +444,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.qoder/rules', global: '~/.qoder/rules' },
     },
   },
-  replit: {
+  'replit': {
     name: 'replit',
     displayName: 'Replit',
     localRoot: '.replit',
     globalRoot: '~/.replit',
-    detect: [{ cwdDir: '.replit' }],
+    detect: [
+      { cwdDir: '.replit' },
+    ],
     dirs: {
       skill: { local: '.replit/skills', global: '~/.replit/skills' },
       agent: { local: '.replit/agents', global: '~/.replit/agents' },
@@ -401,12 +459,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.replit/rules', global: '~/.replit/rules' },
     },
   },
-  roo: {
+  'roo': {
     name: 'roo',
     displayName: 'Roo',
     localRoot: '.roo',
     globalRoot: '~/.roo',
-    detect: [{ cwdDir: '.roo' }],
+    detect: [
+      { cwdDir: '.roo' },
+    ],
     dirs: {
       skill: { local: '.roo/skills', global: '~/.roo/skills' },
       agent: { local: '.roo/agents', global: '~/.roo/agents' },
@@ -414,12 +474,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.roo/rules', global: '~/.roo/rules' },
     },
   },
-  sourcegraph: {
+  'sourcegraph': {
     name: 'sourcegraph',
     displayName: 'Sourcegraph',
     localRoot: '.sourcegraph',
     globalRoot: '~/.sourcegraph',
-    detect: [{ cwdDir: '.sourcegraph' }],
+    detect: [
+      { cwdDir: '.sourcegraph' },
+    ],
     dirs: {
       skill: { local: '.sourcegraph/skills', global: '~/.sourcegraph/skills' },
       agent: { local: '.sourcegraph/agents', global: '~/.sourcegraph/agents' },
@@ -427,12 +489,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.sourcegraph/rules', global: '~/.sourcegraph/rules' },
     },
   },
-  supermaven: {
+  'supermaven': {
     name: 'supermaven',
     displayName: 'Supermaven',
     localRoot: '.supermaven',
     globalRoot: '~/.supermaven',
-    detect: [{ cwdDir: '.supermaven' }],
+    detect: [
+      { cwdDir: '.supermaven' },
+    ],
     dirs: {
       skill: { local: '.supermaven/skills', global: '~/.supermaven/skills' },
       agent: { local: '.supermaven/agents', global: '~/.supermaven/agents' },
@@ -440,12 +504,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.supermaven/rules', global: '~/.supermaven/rules' },
     },
   },
-  sweep: {
+  'sweep': {
     name: 'sweep',
     displayName: 'Sweep',
     localRoot: '.sweep',
     globalRoot: '~/.sweep',
-    detect: [{ cwdDir: '.sweep' }],
+    detect: [
+      { cwdDir: '.sweep' },
+    ],
     dirs: {
       skill: { local: '.sweep/skills', global: '~/.sweep/skills' },
       agent: { local: '.sweep/agents', global: '~/.sweep/agents' },
@@ -453,12 +519,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.sweep/rules', global: '~/.sweep/rules' },
     },
   },
-  tabnine: {
+  'tabnine': {
     name: 'tabnine',
     displayName: 'Tabnine',
     localRoot: '.tabnine',
     globalRoot: '~/.tabnine',
-    detect: [{ cwdDir: '.tabnine' }],
+    detect: [
+      { cwdDir: '.tabnine' },
+    ],
     dirs: {
       skill: { local: '.tabnine/skills', global: '~/.tabnine/skills' },
       agent: { local: '.tabnine/agents', global: '~/.tabnine/agents' },
@@ -466,12 +534,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.tabnine/rules', global: '~/.tabnine/rules' },
     },
   },
-  trae: {
+  'trae': {
     name: 'trae',
     displayName: 'Trae',
     localRoot: '.agents',
     globalRoot: '~/.trae',
-    detect: [{ homeDir: '.trae' }],
+    detect: [
+      { homeDir: '.trae' },
+    ],
     dirs: {
       skill: { local: '.agents/skills', global: '~/.trae/skills' },
       agent: { local: '.agents/agents', global: '~/.trae/agents' },
@@ -479,12 +549,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.agents/rules', global: '~/.trae/rules' },
     },
   },
-  void: {
+  'void': {
     name: 'void',
     displayName: 'Void',
     localRoot: '.void',
     globalRoot: '~/.void',
-    detect: [{ cwdDir: '.void' }],
+    detect: [
+      { cwdDir: '.void' },
+    ],
     dirs: {
       skill: { local: '.void/skills', global: '~/.void/skills' },
       agent: { local: '.void/agents', global: '~/.void/agents' },
@@ -492,12 +564,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.void/rules', global: '~/.void/rules' },
     },
   },
-  windsurf: {
+  'windsurf': {
     name: 'windsurf',
     displayName: 'Windsurf',
     localRoot: '.windsurf',
     globalRoot: '~/.windsurf',
-    detect: [{ cwdDir: '.windsurf' }],
+    detect: [
+      { cwdDir: '.windsurf' },
+    ],
     dirs: {
       skill: { local: '.windsurf/skills', global: '~/.windsurf/skills' },
       agent: { local: '.windsurf/agents', global: '~/.windsurf/agents' },
@@ -505,12 +579,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.windsurf/rules', global: '~/.windsurf/rules' },
     },
   },
-  zed: {
+  'zed': {
     name: 'zed',
     displayName: 'Zed',
     localRoot: '.zed',
     globalRoot: '~/.zed',
-    detect: [{ cwdDir: '.zed' }],
+    detect: [
+      { cwdDir: '.zed' },
+    ],
     dirs: {
       skill: { local: '.zed/skills', global: '~/.zed/skills' },
       agent: { local: '.zed/agents', global: '~/.zed/agents' },
@@ -518,12 +594,14 @@ export const AGENT_CONFIGS: Record<string, GeneratedAgentConfig> = {
       rule: { local: '.zed/rules', global: '~/.zed/rules' },
     },
   },
-  zencoder: {
+  'zencoder': {
     name: 'zencoder',
     displayName: 'ZenCoder',
     localRoot: '.zencoder',
     globalRoot: '~/.zencoder',
-    detect: [{ cwdDir: '.zencoder' }],
+    detect: [
+      { cwdDir: '.zencoder' },
+    ],
     dirs: {
       skill: { local: '.zencoder/skills', global: '~/.zencoder/skills' },
       agent: { local: '.zencoder/agents', global: '~/.zencoder/agents' },
