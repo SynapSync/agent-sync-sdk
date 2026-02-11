@@ -19,11 +19,7 @@ export function isExcluded(name: string, isDir: boolean): boolean {
  * Recursively deep-copy a directory tree, skipping excluded entries.
  * Uses Promise.all for parallel copying within each directory level.
  */
-export async function deepCopy(
-  src: string,
-  dest: string,
-  fs: FileSystemAdapter,
-): Promise<void> {
+export async function deepCopy(src: string, dest: string, fs: FileSystemAdapter): Promise<void> {
   await fs.mkdir(dest, { recursive: true });
 
   const entries = await fs.readdir(src, { withFileTypes: true });

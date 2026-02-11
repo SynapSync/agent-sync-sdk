@@ -1,20 +1,17 @@
 import matter from 'gray-matter';
-import type { HostProvider, ProviderMatch, ProviderFetchOptions, GitClient } from '../types/source.js';
+import type {
+  HostProvider,
+  ProviderMatch,
+  ProviderFetchOptions,
+  GitClient,
+} from '../types/source.js';
 import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import type { EventBus } from '../types/events.js';
+import type { DiscoveryService } from '../discovery/index.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
 import { ProviderFetchError, NoCognitivesFoundError } from '../errors/provider.js';
-
-interface DiscoveryLike {
-  discover(basePath: string, options?: { subpath?: string }): Promise<ReadonlyArray<{
-    readonly name: string;
-    readonly description: string;
-    readonly path: string;
-    readonly type: string;
-    readonly rawContent: string;
-    readonly metadata: Readonly<Record<string, unknown>>;
-  }>>;
-}
+import { isCognitiveType } from '../types/cognitive.js';
+import { withRetry, isRetryableNetworkError } from '../utils/retry.js';
 
 const GITHUB_URL_RE = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)/;
 const SHORTHAND_RE = /^([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)/;
@@ -26,25 +23,35 @@ export class GitHubProvider implements HostProvider {
 
   constructor(
     private readonly gitClient: GitClient,
-    private readonly discovery: DiscoveryLike,
+    private readonly discovery: DiscoveryService,
     private readonly eventBus: EventBus,
+    private readonly fetchTimeoutMs: number = 15_000,
   ) {}
 
   match(source: string): ProviderMatch {
     const ghMatch = source.match(GITHUB_URL_RE);
     if (ghMatch) {
-      return { matches: true, sourceIdentifier: sourceIdentifier(`${ghMatch[1]}/${ghMatch[2]!.replace(/\.git$/, '')}`) };
+      return {
+        matches: true,
+        sourceIdentifier: sourceIdentifier(`${ghMatch[1]}/${ghMatch[2]!.replace(/\.git$/, '')}`),
+      };
     }
     if (!source.startsWith('.') && !source.includes('://')) {
       const shortMatch = source.match(SHORTHAND_RE);
       if (shortMatch) {
-        return { matches: true, sourceIdentifier: sourceIdentifier(`${shortMatch[1]}/${shortMatch[2]}`) };
+        return {
+          matches: true,
+          sourceIdentifier: sourceIdentifier(`${shortMatch[1]}/${shortMatch[2]}`),
+        };
       }
     }
     return { matches: false };
   }
 
-  async fetchCognitive(source: string, options?: ProviderFetchOptions): Promise<RemoteCognitive | null> {
+  async fetchCognitive(
+    source: string,
+    options?: ProviderFetchOptions,
+  ): Promise<RemoteCognitive | null> {
     const blobMatch = source.match(BLOB_RE);
     if (!blobMatch) return null;
 
@@ -52,22 +59,34 @@ export class GitHubProvider implements HostProvider {
     this.eventBus.emit('provider:fetch:start', { providerId: this.id, url: rawUrl });
 
     try {
-      const response = await fetch(rawUrl, {
-        ...(options?.signal != null && { signal: options.signal }),
-        headers: { 'User-Agent': 'agent-sync-sdk' },
-      });
+      const signal = options?.signal ?? AbortSignal.timeout(this.fetchTimeoutMs);
+      const response = await withRetry(
+        () => fetch(rawUrl, { signal, headers: { 'User-Agent': 'agent-sync-sdk' } }),
+        { shouldRetry: (err) => isRetryableNetworkError(err) },
+      );
       if (!response.ok) {
-        this.eventBus.emit('provider:fetch:error', { providerId: this.id, url: rawUrl, error: `HTTP ${response.status}` });
+        this.eventBus.emit('provider:fetch:error', {
+          providerId: this.id,
+          url: rawUrl,
+          error: `HTTP ${response.status}`,
+        });
         return null;
       }
 
       const content = await response.text();
       const parsed = matter(content);
       const data = parsed.data as Record<string, unknown>;
-      const name = (typeof data['name'] === 'string' ? data['name'] : null) ?? blobMatch[4]!.split('/').pop()?.replace(/\.md$/i, '') ?? 'unknown';
+      const name =
+        (typeof data['name'] === 'string' ? data['name'] : null) ??
+        blobMatch[4]!.split('/').pop()?.replace(/\.md$/i, '') ??
+        'unknown';
       const ownerRepo = `${blobMatch[1]}/${blobMatch[2]}`;
 
-      this.eventBus.emit('provider:fetch:complete', { providerId: this.id, url: rawUrl, found: true });
+      this.eventBus.emit('provider:fetch:complete', {
+        providerId: this.id,
+        url: rawUrl,
+        found: true,
+      });
 
       return {
         name,
@@ -77,11 +96,15 @@ export class GitHubProvider implements HostProvider {
         sourceUrl: source,
         providerId: this.id,
         sourceIdentifier: sourceIdentifier(ownerRepo),
-        type: (data['type'] as CognitiveType) ?? 'skill',
+        type: isCognitiveType(data['type']) ? data['type'] : 'skill',
         metadata: Object.freeze({ ...data }),
       };
     } catch (cause) {
-      this.eventBus.emit('provider:fetch:error', { providerId: this.id, url: rawUrl, error: (cause as Error).message });
+      this.eventBus.emit('provider:fetch:error', {
+        providerId: this.id,
+        url: rawUrl,
+        error: (cause as Error).message,
+      });
       throw new ProviderFetchError(rawUrl, this.id, undefined, { cause: cause as Error });
     }
   }

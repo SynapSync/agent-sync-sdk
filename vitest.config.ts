@@ -10,6 +10,7 @@ export default defineConfig({
       include: ['src/**/*.ts'],
       exclude: [
         'src/**/__generated__/**',
+        'src/agents/compile/**',     // build-time codegen script
         'src/**/index.ts',
         'src/types/agent.ts',       // pure interfaces
         'src/types/events.ts',       // pure interfaces

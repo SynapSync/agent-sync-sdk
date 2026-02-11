@@ -12,7 +12,10 @@ function createMockCustomProvider(id: string): HostProvider {
     id,
     displayName: id,
     match: (_source: string): ProviderMatch => ({ matches: false }),
-    fetchCognitive: async (_s: string, _o?: ProviderFetchOptions): Promise<RemoteCognitive | null> => null,
+    fetchCognitive: async (
+      _s: string,
+      _o?: ProviderFetchOptions,
+    ): Promise<RemoteCognitive | null> => null,
     fetchAll: async (_s: string, _o?: ProviderFetchOptions): Promise<RemoteCognitive[]> => [],
     toRawUrl: (url: string) => url,
     getSourceIdentifier: (s: string) => s,
@@ -41,10 +44,7 @@ describe('registerDefaultProviders', () => {
     const registry = new ProviderRegistryImpl(eventBus);
     const fs = createMemoryFs();
     const customProvider = createMockCustomProvider('my-custom');
-    const config = resolveConfig(
-      { providers: { custom: [customProvider] } },
-      fs,
-    );
+    const config = resolveConfig({ providers: { custom: [customProvider] } }, fs);
 
     registerDefaultProviders(registry, config);
 

@@ -10,7 +10,6 @@ describe('Integration: full lifecycle', () => {
       cwd: '/project',
       homeDir: '/home/user',
       fs,
-      telemetry: { enabled: false },
     });
     return { sdk, fs };
   }

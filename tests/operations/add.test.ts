@@ -20,9 +20,7 @@ import { safeName, sourceIdentifier, cognitiveName } from '../../src/types/brand
 import { isOk, isErr } from '../../src/types/result.js';
 import { AddOperation } from '../../src/operations/add.js';
 
-function createMockContext(
-  overrides?: Partial<OperationContext>,
-): OperationContext {
+function createMockContext(overrides?: Partial<OperationContext>): OperationContext {
   const eventBus = createCapturingEventBus();
   const fs = createMemoryFs();
 
@@ -94,7 +92,6 @@ function createMockContext(
     git: { cloneTimeoutMs: 30000, depth: 1 },
     providers: { custom: [] },
     agents: { additional: [] },
-    telemetry: { enabled: false },
   };
 
   return {
@@ -111,9 +108,7 @@ function createMockContext(
   };
 }
 
-function createMockRemoteCognitive(
-  overrides?: Partial<RemoteCognitive>,
-): RemoteCognitive {
+function createMockRemoteCognitive(overrides?: Partial<RemoteCognitive>): RemoteCognitive {
   return {
     name: 'test-skill',
     description: 'A test skill',
@@ -348,12 +343,8 @@ describe('AddOperation', () => {
     const op = new AddOperation(ctx);
     await op.execute('https://github.com/owner/repo');
 
-    const startEvents = eventBus.events.filter(
-      (e) => e.event === 'operation:start',
-    );
-    const completeEvents = eventBus.events.filter(
-      (e) => e.event === 'operation:complete',
-    );
+    const startEvents = eventBus.events.filter((e) => e.event === 'operation:start');
+    const completeEvents = eventBus.events.filter((e) => e.event === 'operation:complete');
 
     expect(startEvents).toHaveLength(1);
     expect(completeEvents).toHaveLength(1);
@@ -361,10 +352,7 @@ describe('AddOperation', () => {
     const startPayload = startEvents[0]?.payload as Record<string, unknown>;
     expect(startPayload['operation']).toBe('add');
 
-    const completePayload = completeEvents[0]?.payload as Record<
-      string,
-      unknown
-    >;
+    const completePayload = completeEvents[0]?.payload as Record<string, unknown>;
     expect(completePayload['operation']).toBe('add');
     expect(typeof completePayload['durationMs']).toBe('number');
   });
@@ -457,9 +445,7 @@ describe('AddOperation', () => {
     const op = new AddOperation(ctx);
     await op.execute('bad-source');
 
-    const errorEvents = eventBus.events.filter(
-      (e) => e.event === 'operation:error',
-    );
+    const errorEvents = eventBus.events.filter((e) => e.event === 'operation:error');
     expect(errorEvents).toHaveLength(1);
 
     const errorPayload = errorEvents[0]?.payload as Record<string, unknown>;

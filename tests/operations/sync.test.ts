@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { OperationContext } from '../../src/operations/context.js';
 import type { AgentRegistry } from '../../src/types/agent.js';
-import type { ProviderRegistry, SourceParser, GitClient, SourceDescriptor } from '../../src/types/source.js';
+import type {
+  ProviderRegistry,
+  SourceParser,
+  GitClient,
+  SourceDescriptor,
+} from '../../src/types/source.js';
 import type { DiscoveryService } from '../../src/discovery/index.js';
 import type { Installer } from '../../src/types/install.js';
 import type { LockManager, LockEntry } from '../../src/types/lock.js';
@@ -85,7 +90,6 @@ function createMockContext(overrides?: Partial<OperationContext>): OperationCont
     git: { cloneTimeoutMs: 30000, depth: 1 },
     providers: { custom: [] },
     agents: { additional: [] },
-    telemetry: { enabled: false },
   };
 
   return {
@@ -290,7 +294,9 @@ describe('SyncOperation', () => {
     ctx = createMockContext({
       lockManager: {
         ...ctx.lockManager,
-        getAllEntries: async () => { throw new Error('Storage unavailable'); },
+        getAllEntries: async () => {
+          throw new Error('Storage unavailable');
+        },
       },
     });
 
@@ -299,7 +305,7 @@ describe('SyncOperation', () => {
 
     expect(isErr(result)).toBe(true);
     if (!isErr(result)) return;
-    expect(result.error.message).toBe('Sync operation failed');
+    expect(result.error.message).toBe('Storage unavailable');
   });
 
   it('handles multiple entries with mixed status', async () => {

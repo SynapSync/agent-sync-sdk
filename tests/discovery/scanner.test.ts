@@ -17,8 +17,8 @@ describe('CognitiveScanner', () => {
     const scanner = new CognitiveScanner(fs);
     const results = await scanner.scan('/base', { types: ['skill'] });
     expect(results).toHaveLength(2);
-    expect(results.every(r => r.type === 'skill')).toBe(true);
-    expect(results.every(r => r.fileName === 'SKILL.md')).toBe(true);
+    expect(results.every((r) => r.type === 'skill')).toBe(true);
+    expect(results.every((r) => r.fileName === 'SKILL.md')).toBe(true);
   });
 
   it('discovers PROMPT.md in prompts/<name>/ directories', async () => {
@@ -40,7 +40,7 @@ describe('CognitiveScanner', () => {
     });
     const scanner = new CognitiveScanner(fs);
     const results = await scanner.scan('/base');
-    const types = new Set(results.map(r => r.type));
+    const types = new Set(results.map((r) => r.type));
     expect(types.size).toBe(4);
     expect(types.has('skill')).toBe(true);
     expect(types.has('prompt')).toBe(true);
@@ -56,7 +56,7 @@ describe('CognitiveScanner', () => {
     });
     const scanner = new CognitiveScanner(fs);
     const results = await scanner.scan('/base', { types: ['skill', 'rule'] });
-    const types = new Set(results.map(r => r.type));
+    const types = new Set(results.map((r) => r.type));
     expect(types.has('skill')).toBe(true);
     expect(types.has('rule')).toBe(true);
     expect(types.has('prompt')).toBe(false);
@@ -83,7 +83,7 @@ describe('CognitiveScanner', () => {
     const scanner = new CognitiveScanner(fs);
     const results = await scanner.scan('/base', { types: ['skill'] });
     // Should not have duplicate entries
-    const paths = results.map(r => r.path);
+    const paths = results.map((r) => r.path);
     expect(new Set(paths).size).toBe(paths.length);
   });
 

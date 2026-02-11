@@ -31,6 +31,10 @@ export interface Dirent {
   isSymbolicLink(): boolean;
 }
 
+// ---------- Environment ----------
+
+export type EnvReader = (key: string) => string | undefined;
+
 // ---------- SDKConfig ----------
 
 export interface SDKConfig {
@@ -42,7 +46,10 @@ export interface SDKConfig {
   readonly git: Readonly<GitConfig>;
   readonly providers: Readonly<ProviderConfig>;
   readonly agents: Readonly<AgentRegistryConfig>;
-  readonly telemetry: Readonly<TelemetryConfig>;
+  /** Timeout in milliseconds for HTTP fetch calls. Default: 15000 (15s). */
+  readonly fetchTimeoutMs: number;
+  /** Injectable environment variable reader. Default: reads from process.env. */
+  readonly env: EnvReader;
 }
 
 export interface GitConfig {
@@ -60,11 +67,6 @@ export interface AgentRegistryConfig {
   readonly additional: readonly AgentConfig[];
 }
 
-export interface TelemetryConfig {
-  readonly enabled: boolean;
-  readonly endpoint?: string;
-}
-
 // ---------- Categories ----------
 
 export interface Category {
@@ -79,15 +81,15 @@ export interface CategoryMapping {
 }
 
 export const DEFAULT_CATEGORIES = {
-  general:   { slug: 'general',   displayName: 'General' },
-  planning:  { slug: 'planning',  displayName: 'Planning' },
-  qa:        { slug: 'qa',        displayName: 'QA' },
-  growth:    { slug: 'growth',    displayName: 'Growth' },
-  frontend:  { slug: 'frontend',  displayName: 'Frontend' },
-  backend:   { slug: 'backend',   displayName: 'Backend' },
-  devops:    { slug: 'devops',    displayName: 'DevOps' },
-  security:  { slug: 'security',  displayName: 'Security' },
-  data:      { slug: 'data',      displayName: 'Data' },
-  mobile:    { slug: 'mobile',    displayName: 'Mobile' },
-  infra:     { slug: 'infra',     displayName: 'Infrastructure' },
+  general: { slug: 'general', displayName: 'General' },
+  planning: { slug: 'planning', displayName: 'Planning' },
+  qa: { slug: 'qa', displayName: 'QA' },
+  growth: { slug: 'growth', displayName: 'Growth' },
+  frontend: { slug: 'frontend', displayName: 'Frontend' },
+  backend: { slug: 'backend', displayName: 'Backend' },
+  devops: { slug: 'devops', displayName: 'DevOps' },
+  security: { slug: 'security', displayName: 'Security' },
+  data: { slug: 'data', displayName: 'Data' },
+  mobile: { slug: 'mobile', displayName: 'Mobile' },
+  infra: { slug: 'infra', displayName: 'Infrastructure' },
 } as const satisfies Record<string, Category>;

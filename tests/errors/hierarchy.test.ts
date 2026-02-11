@@ -16,8 +16,18 @@ import {
   FileWriteError,
   EloopError,
 } from '../../src/errors/install.js';
-import { LockError, LockReadError, LockWriteError, LockMigrationError } from '../../src/errors/lock.js';
-import { DiscoveryError, ParseError, ScanError, ValidationError } from '../../src/errors/discovery.js';
+import {
+  LockError,
+  LockReadError,
+  LockWriteError,
+  LockMigrationError,
+} from '../../src/errors/lock.js';
+import {
+  DiscoveryError,
+  ParseError,
+  ScanError,
+  ValidationError,
+} from '../../src/errors/discovery.js';
 import { OperationError, ConflictError } from '../../src/errors/operation.js';
 import { SourceError, SourceParseError, GitCloneError } from '../../src/errors/source.js';
 

@@ -6,19 +6,29 @@ import { ParseError } from '../../src/errors/discovery.js';
 describe('CognitiveParser', () => {
   it('extracts name from frontmatter', async () => {
     const fs = createMemoryFs({
-      '/cognitives/my-skill/SKILL.md': '---\nname: react-hooks\ndescription: React hooks guide\n---\n# Content\n',
+      '/cognitives/my-skill/SKILL.md':
+        '---\nname: react-hooks\ndescription: React hooks guide\n---\n# Content\n',
     });
     const parser = new CognitiveParser(fs);
-    const result = await parser.parse({ path: '/cognitives/my-skill', type: 'skill', fileName: 'SKILL.md' });
+    const result = await parser.parse({
+      path: '/cognitives/my-skill',
+      type: 'skill',
+      fileName: 'SKILL.md',
+    });
     expect(result.name).toBe('react-hooks');
   });
 
   it('extracts description from frontmatter', async () => {
     const fs = createMemoryFs({
-      '/cognitives/my-skill/SKILL.md': '---\nname: test\ndescription: My custom description\n---\n# Content\n',
+      '/cognitives/my-skill/SKILL.md':
+        '---\nname: test\ndescription: My custom description\n---\n# Content\n',
     });
     const parser = new CognitiveParser(fs);
-    const result = await parser.parse({ path: '/cognitives/my-skill', type: 'skill', fileName: 'SKILL.md' });
+    const result = await parser.parse({
+      path: '/cognitives/my-skill',
+      type: 'skill',
+      fileName: 'SKILL.md',
+    });
     expect(result.description).toBe('My custom description');
   });
 
@@ -27,7 +37,11 @@ describe('CognitiveParser', () => {
       '/cognitives/fallback-name/SKILL.md': '---\ndescription: No name field\n---\n# Content\n',
     });
     const parser = new CognitiveParser(fs);
-    const result = await parser.parse({ path: '/cognitives/fallback-name', type: 'skill', fileName: 'SKILL.md' });
+    const result = await parser.parse({
+      path: '/cognitives/fallback-name',
+      type: 'skill',
+      fileName: 'SKILL.md',
+    });
     expect(result.name).toBe('fallback-name');
   });
 
@@ -36,17 +50,26 @@ describe('CognitiveParser', () => {
       '/cognitives/my-skill/SKILL.md': '---\nname: test\n---\n# Heading\nFirst paragraph line.\n',
     });
     const parser = new CognitiveParser(fs);
-    const result = await parser.parse({ path: '/cognitives/my-skill', type: 'skill', fileName: 'SKILL.md' });
+    const result = await parser.parse({
+      path: '/cognitives/my-skill',
+      type: 'skill',
+      fileName: 'SKILL.md',
+    });
     expect(result.description).toBe('First paragraph line.');
   });
 
   it('returns complete Cognitive object with all fields', async () => {
-    const content = '---\nname: complete-skill\ndescription: Complete description\ncategory: frontend\ntags:\n  - react\n  - typescript\n---\n# Content\n';
+    const content =
+      '---\nname: complete-skill\ndescription: Complete description\ncategory: frontend\ntags:\n  - react\n  - typescript\n---\n# Content\n';
     const fs = createMemoryFs({
       '/cognitives/my-skill/SKILL.md': content,
     });
     const parser = new CognitiveParser(fs);
-    const result = await parser.parse({ path: '/cognitives/my-skill', type: 'skill', fileName: 'SKILL.md' });
+    const result = await parser.parse({
+      path: '/cognitives/my-skill',
+      type: 'skill',
+      fileName: 'SKILL.md',
+    });
     expect(result.name).toBe('complete-skill');
     expect(result.description).toBe('Complete description');
     expect(result.path).toBe('/cognitives/my-skill');
@@ -58,16 +81,21 @@ describe('CognitiveParser', () => {
     const fs = createMemoryFs({});
     const parser = new CognitiveParser(fs);
     await expect(
-      parser.parse({ path: '/missing', type: 'skill', fileName: 'SKILL.md' })
+      parser.parse({ path: '/missing', type: 'skill', fileName: 'SKILL.md' }),
     ).rejects.toThrow(ParseError);
   });
 
   it('stores all frontmatter keys in metadata', async () => {
     const fs = createMemoryFs({
-      '/cognitives/my-skill/SKILL.md': '---\nname: test\nauthor: john\nversion: 1.0.0\ncustom_field: custom_value\n---\n# Content\n',
+      '/cognitives/my-skill/SKILL.md':
+        '---\nname: test\nauthor: john\nversion: 1.0.0\ncustom_field: custom_value\n---\n# Content\n',
     });
     const parser = new CognitiveParser(fs);
-    const result = await parser.parse({ path: '/cognitives/my-skill', type: 'skill', fileName: 'SKILL.md' });
+    const result = await parser.parse({
+      path: '/cognitives/my-skill',
+      type: 'skill',
+      fileName: 'SKILL.md',
+    });
     expect(result.metadata['author']).toBe('john');
     expect(result.metadata['version']).toBe('1.0.0');
     expect(result.metadata['custom_field']).toBe('custom_value');

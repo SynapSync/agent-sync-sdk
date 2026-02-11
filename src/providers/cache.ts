@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import type { FileSystemAdapter } from '../types/config.js';
 import type { GitClient } from '../types/source.js';
+import { withRetry, isRetryableNetworkError } from '../utils/retry.js';
 
 export interface CacheMeta {
   readonly createdAt: number;
@@ -57,12 +58,24 @@ export class CloneCache {
     const key = this.cacheKey(url, ref);
     const metaPath = join(this.cacheDir, `${key}.meta.json`);
     const cachePath = join(this.cacheDir, key);
-    try { await this.fs.rm(metaPath, { force: true }); } catch { /* ignore */ }
-    try { await this.fs.rm(cachePath, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      await this.fs.rm(metaPath, { force: true });
+    } catch {
+      /* ignore */
+    }
+    try {
+      await this.fs.rm(cachePath, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   }
 
   async clear(): Promise<void> {
-    try { await this.fs.rm(this.cacheDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      await this.fs.rm(this.cacheDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   }
 
   private cacheKey(url: string, ref?: string): string {
@@ -78,6 +91,7 @@ export class FetchCache {
     private readonly fs: FileSystemAdapter,
     homeDir: string,
     private readonly defaultTtlMs: number = 900_000,
+    private readonly fetchTimeoutMs: number = 15_000,
   ) {
     this.cacheDir = join(homeDir, '.cache', 'cognit', 'fetch');
   }
@@ -98,7 +112,14 @@ export class FetchCache {
       // Cache miss
     }
 
-    const response = await fetch(url, { headers: { 'User-Agent': 'agent-sync-sdk' } });
+    const response = await withRetry(
+      () =>
+        fetch(url, {
+          signal: AbortSignal.timeout(this.fetchTimeoutMs),
+          headers: { 'User-Agent': 'agent-sync-sdk' },
+        }),
+      { shouldRetry: (err) => isRetryableNetworkError(err) },
+    );
     if (!response.ok) throw new Error(`Fetch failed: ${url} (${response.status})`);
     const content = await response.text();
 
@@ -117,7 +138,11 @@ export class FetchCache {
   }
 
   async clear(): Promise<void> {
-    try { await this.fs.rm(this.cacheDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      await this.fs.rm(this.cacheDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   }
 
   private cacheKey(url: string): string {

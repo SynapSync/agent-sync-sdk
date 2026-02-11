@@ -151,7 +151,10 @@ describe('FetchCache', () => {
     expect(fetch).toHaveBeenCalledOnce();
 
     // Content and meta should be persisted
-    const key = createHash('sha256').update('https://example.com/SKILL.md').digest('hex').slice(0, 16);
+    const key = createHash('sha256')
+      .update('https://example.com/SKILL.md')
+      .digest('hex')
+      .slice(0, 16);
     const contentPath = `/home/user/.cache/cognit/fetch/${key}.content`;
     const metaPath = `/home/user/.cache/cognit/fetch/${key}.meta.json`;
     expect(await fs.exists(contentPath)).toBe(true);

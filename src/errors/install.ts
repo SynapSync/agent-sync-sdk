@@ -28,7 +28,10 @@ export class SymlinkError extends InstallError {
 export class FileWriteError extends InstallError {
   override readonly code = 'FILE_WRITE_ERROR';
 
-  constructor(readonly filePath: string, options?: ErrorOptions) {
+  constructor(
+    readonly filePath: string,
+    options?: ErrorOptions,
+  ) {
     super(`Failed to write file: ${filePath}`, options);
   }
 }

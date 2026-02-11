@@ -1,9 +1,5 @@
 export { LockFileManagerImpl } from './manager.js';
-export {
-  computeContentHash,
-  verifyContentHash,
-  computeDirectoryHash,
-} from './integrity.js';
+export { computeContentHash, verifyContentHash, computeDirectoryHash } from './integrity.js';
 export {
   makeLockKey,
   parseLockKey,

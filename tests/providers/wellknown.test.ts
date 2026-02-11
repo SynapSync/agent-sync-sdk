@@ -53,7 +53,9 @@ describe('WellKnownProvider', () => {
 
   describe('getSourceIdentifier()', () => {
     it('returns wellknown/hostname format', () => {
-      expect(provider.getSourceIdentifier('https://example.com/path')).toBe('wellknown/example.com');
+      expect(provider.getSourceIdentifier('https://example.com/path')).toBe(
+        'wellknown/example.com',
+      );
     });
 
     it('falls back for invalid URLs', () => {

@@ -1,7 +1,7 @@
 import { join, resolve } from 'node:path';
 import { homedir, platform } from 'node:os';
 
-import type { FileSystemAdapter } from '../types/config.js';
+import type { FileSystemAdapter, EnvReader } from '../types/config.js';
 import type { AgentRegistry } from '../types/agent.js';
 import type { AgentType } from '../types/agent.js';
 import type { CognitiveType } from '../types/cognitive.js';
@@ -11,23 +11,25 @@ import { sanitizeName } from './security.js';
 
 const COGNIT_DIR = 'cognit';
 
+const defaultEnv: EnvReader = (key) => process.env[key];
+
 /**
  * Returns the global base directory for cognitive storage.
  * - macOS: ~/.agents/cognit
  * - Linux: $XDG_DATA_HOME/cognit or ~/.local/share/cognit
  * - Windows: %APPDATA%\cognit
  */
-export function getGlobalBase(): string {
+export function getGlobalBase(env: EnvReader = defaultEnv): string {
   const os = platform();
   if (os === 'win32') {
-    const appData = process.env['APPDATA'];
+    const appData = env('APPDATA');
     if (appData) {
       return join(appData, COGNIT_DIR);
     }
     return join(homedir(), 'AppData', 'Roaming', COGNIT_DIR);
   }
   if (os === 'linux') {
-    const xdg = process.env['XDG_DATA_HOME'];
+    const xdg = env('XDG_DATA_HOME');
     if (xdg) {
       return join(xdg, COGNIT_DIR);
     }
@@ -50,6 +52,7 @@ export function getCanonicalPath(
   name: string,
   scope: InstallScope,
   projectRoot?: string,
+  env?: EnvReader,
 ): string {
   const typeSubdir = COGNITIVE_SUBDIRS[cognitiveType];
   const safeName = sanitizeName(name);
@@ -61,7 +64,7 @@ export function getCanonicalPath(
     }
     return join(projectRoot, AGENTS_DIR, COGNIT_DIR, typeSubdir, safeCategory, safeName);
   }
-  return join(getGlobalBase(), typeSubdir, safeCategory, safeName);
+  return join(getGlobalBase(env), typeSubdir, safeCategory, safeName);
 }
 
 /**

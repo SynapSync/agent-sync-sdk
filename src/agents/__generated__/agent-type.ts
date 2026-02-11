@@ -39,5 +39,4 @@ export type AgentType =
   | 'void'
   | 'windsurf'
   | 'zed'
-  | 'zencoder'
-  ;
+  | 'zencoder';

@@ -8,7 +8,10 @@ export class SourceError extends CognitError {
 export class SourceParseError extends SourceError {
   override readonly code = 'SOURCE_PARSE_ERROR';
 
-  constructor(readonly rawSource: string, options?: ErrorOptions) {
+  constructor(
+    readonly rawSource: string,
+    options?: ErrorOptions,
+  ) {
     super(`Failed to parse source: "${rawSource}"`, options);
   }
 }

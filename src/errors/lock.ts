@@ -8,7 +8,10 @@ export class LockError extends CognitError {
 export class LockReadError extends LockError {
   override readonly code = 'LOCK_READ_ERROR';
 
-  constructor(readonly lockPath: string, options?: ErrorOptions) {
+  constructor(
+    readonly lockPath: string,
+    options?: ErrorOptions,
+  ) {
     super(`Failed to read lock file: ${lockPath}`, options);
   }
 }
@@ -19,7 +22,10 @@ export { LockReadError as LockCorruptedError };
 export class LockWriteError extends LockError {
   override readonly code = 'LOCK_WRITE_ERROR';
 
-  constructor(readonly lockPath: string, options?: ErrorOptions) {
+  constructor(
+    readonly lockPath: string,
+    options?: ErrorOptions,
+  ) {
     super(`Failed to write lock file: ${lockPath}`, options);
   }
 }

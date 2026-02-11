@@ -4,30 +4,36 @@ import type { CognitiveName, SafeName, SourceIdentifier } from './brands.js';
 
 export type CognitiveType = 'skill' | 'agent' | 'prompt' | 'rule';
 
+const VALID_COGNITIVE_TYPES = new Set<string>(['skill', 'agent', 'prompt', 'rule']);
+
+export function isCognitiveType(value: unknown): value is CognitiveType {
+  return typeof value === 'string' && VALID_COGNITIVE_TYPES.has(value);
+}
+
 export interface CognitiveTypeConfig {
   readonly subdir: string;
   readonly fileName: string;
 }
 
 export const COGNITIVE_TYPE_CONFIGS = {
-  skill:  { subdir: 'skills',  fileName: 'SKILL.md' },
-  agent:  { subdir: 'agents',  fileName: 'AGENT.md' },
+  skill: { subdir: 'skills', fileName: 'SKILL.md' },
+  agent: { subdir: 'agents', fileName: 'AGENT.md' },
   prompt: { subdir: 'prompts', fileName: 'PROMPT.md' },
-  rule:   { subdir: 'rules',   fileName: 'RULE.md' },
+  rule: { subdir: 'rules', fileName: 'RULE.md' },
 } as const satisfies Record<CognitiveType, CognitiveTypeConfig>;
 
 export const COGNITIVE_SUBDIRS: Record<CognitiveType, string> = {
-  skill:  COGNITIVE_TYPE_CONFIGS.skill.subdir,
-  agent:  COGNITIVE_TYPE_CONFIGS.agent.subdir,
+  skill: COGNITIVE_TYPE_CONFIGS.skill.subdir,
+  agent: COGNITIVE_TYPE_CONFIGS.agent.subdir,
   prompt: COGNITIVE_TYPE_CONFIGS.prompt.subdir,
-  rule:   COGNITIVE_TYPE_CONFIGS.rule.subdir,
+  rule: COGNITIVE_TYPE_CONFIGS.rule.subdir,
 };
 
 export const COGNITIVE_FILE_NAMES: Record<CognitiveType, string> = {
-  skill:  COGNITIVE_TYPE_CONFIGS.skill.fileName,
-  agent:  COGNITIVE_TYPE_CONFIGS.agent.fileName,
+  skill: COGNITIVE_TYPE_CONFIGS.skill.fileName,
+  agent: COGNITIVE_TYPE_CONFIGS.agent.fileName,
   prompt: COGNITIVE_TYPE_CONFIGS.prompt.fileName,
-  rule:   COGNITIVE_TYPE_CONFIGS.rule.fileName,
+  rule: COGNITIVE_TYPE_CONFIGS.rule.fileName,
 };
 
 export const AGENTS_DIR = '.agents' as const;
@@ -43,10 +49,18 @@ export interface Cognitive {
   readonly metadata: Readonly<Record<string, unknown>>;
 }
 
-export interface Skill extends Cognitive { readonly type: 'skill'; }
-export interface Prompt extends Cognitive { readonly type: 'prompt'; }
-export interface Rule extends Cognitive { readonly type: 'rule'; }
-export interface AgentCognitive extends Cognitive { readonly type: 'agent'; }
+export interface Skill extends Cognitive {
+  readonly type: 'skill';
+}
+export interface Prompt extends Cognitive {
+  readonly type: 'prompt';
+}
+export interface Rule extends Cognitive {
+  readonly type: 'rule';
+}
+export interface AgentCognitive extends Cognitive {
+  readonly type: 'agent';
+}
 
 // ---------- RemoteCognitive ----------
 

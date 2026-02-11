@@ -8,7 +8,10 @@ export class DiscoveryError extends CognitError {
 export class ParseError extends DiscoveryError {
   override readonly code = 'PARSE_ERROR';
 
-  constructor(readonly filePath: string, options?: ErrorOptions) {
+  constructor(
+    readonly filePath: string,
+    options?: ErrorOptions,
+  ) {
     super(`Failed to parse cognitive file: ${filePath}`, options);
   }
 }
@@ -16,7 +19,10 @@ export class ParseError extends DiscoveryError {
 export class ScanError extends DiscoveryError {
   override readonly code = 'SCAN_ERROR';
 
-  constructor(readonly directory: string, options?: ErrorOptions) {
+  constructor(
+    readonly directory: string,
+    options?: ErrorOptions,
+  ) {
     super(`Failed to scan directory: ${directory}`, options);
   }
 }
@@ -24,7 +30,10 @@ export class ScanError extends DiscoveryError {
 export class ValidationError extends DiscoveryError {
   override readonly code = 'VALIDATION_ERROR';
 
-  constructor(readonly field: string, readonly reason: string) {
+  constructor(
+    readonly field: string,
+    readonly reason: string,
+  ) {
     super(`Validation failed: ${field} -- ${reason}`);
   }
 }

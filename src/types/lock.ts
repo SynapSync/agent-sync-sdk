@@ -10,6 +10,7 @@ export interface LockEntry {
   readonly cognitivePath?: string;
   readonly contentHash: string;
   readonly cognitiveType: CognitiveType;
+  readonly category?: string;
   readonly installedAt: string;
   readonly updatedAt: string;
 }

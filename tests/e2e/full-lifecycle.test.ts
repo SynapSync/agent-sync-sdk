@@ -24,7 +24,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.init('test-skill', 'skill', {
@@ -39,9 +38,7 @@ describe('E2E: full lifecycle on real filesystem', () => {
       expect(result.value.files.length).toBeGreaterThanOrEqual(1);
 
       // Verify the SKILL.md file was created
-      const skillFile = result.value.files.find((f) =>
-        f.endsWith('SKILL.md'),
-      );
+      const skillFile = result.value.files.find((f) => f.endsWith('SKILL.md'));
       expect(skillFile).toBeDefined();
       expect(existsSync(skillFile!)).toBe(true);
     }
@@ -54,7 +51,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.init('my-rule', 'rule', {
@@ -83,7 +79,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.init('existing-skill', 'skill');
@@ -97,7 +92,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.list();
@@ -115,7 +109,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.check();
@@ -133,7 +126,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.sync();
@@ -151,7 +143,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     const result = await sdk.update();
@@ -169,7 +160,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     await expect(sdk.dispose()).resolves.toBeUndefined();
@@ -197,7 +187,6 @@ describe('E2E: full lifecycle on real filesystem', () => {
     const sdk = createAgentSyncSDK({
       cwd: projectDir,
       homeDir: tempDir,
-      telemetry: { enabled: false },
     });
 
     // Add (discover)

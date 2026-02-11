@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { DirectURLProvider } from '../../src/providers/direct.js';
+import { ProviderNotImplementedError } from '../../src/errors/provider.js';
 
 describe('DirectURLProvider', () => {
   const provider = new DirectURLProvider();
@@ -59,16 +60,24 @@ describe('DirectURLProvider', () => {
   });
 
   describe('fetchCognitive', () => {
-    it('returns null (stub)', async () => {
-      const result = await provider.fetchCognitive('https://example.com/SKILL.md');
-      expect(result).toBeNull();
+    it('throws ProviderNotImplementedError', async () => {
+      await expect(provider.fetchCognitive('https://example.com/SKILL.md')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
+    });
+
+    it('includes provider id in error', async () => {
+      await expect(provider.fetchCognitive('https://example.com/SKILL.md')).rejects.toThrow(
+        'direct-url',
+      );
     });
   });
 
   describe('fetchAll', () => {
-    it('returns empty array (stub)', async () => {
-      const result = await provider.fetchAll('https://example.com/SKILL.md');
-      expect(result).toEqual([]);
+    it('throws ProviderNotImplementedError', async () => {
+      await expect(provider.fetchAll('https://example.com/SKILL.md')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
   });
 

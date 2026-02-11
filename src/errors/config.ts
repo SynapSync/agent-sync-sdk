@@ -16,7 +16,10 @@ export class ConfigNotFoundError extends ConfigError {
 export class InvalidConfigError extends ConfigError {
   override readonly code = 'INVALID_CONFIG_ERROR';
 
-  constructor(readonly field: string, readonly reason: string) {
+  constructor(
+    readonly field: string,
+    readonly reason: string,
+  ) {
     super(`Invalid config: ${field} -- ${reason}`);
   }
 }

@@ -44,7 +44,11 @@ export class GitClientImpl implements GitClient {
         url,
         error: (cause as Error).message,
       });
-      try { await rm(tempDir, { recursive: true, force: true }); } catch { /* ignore */ }
+      try {
+        await rm(tempDir, { recursive: true, force: true });
+      } catch {
+        /* ignore */
+      }
       throw new GitCloneError(url, (cause as Error).message, { cause: cause as Error });
     }
   }

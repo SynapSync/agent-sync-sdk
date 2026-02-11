@@ -59,8 +59,8 @@ describe('writeLockFileAtomic()', () => {
 
     const lock: LockFile = { version: CURRENT_LOCK_VERSION, cognitives: {} };
 
-    await expect(
-      writeLockFileAtomic('/test/lock.json', lock, failingFs),
-    ).rejects.toThrow('disk full');
+    await expect(writeLockFileAtomic('/test/lock.json', lock, failingFs)).rejects.toThrow(
+      'disk full',
+    );
   });
 });

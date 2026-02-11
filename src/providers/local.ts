@@ -4,18 +4,8 @@ import type { HostProvider, ProviderMatch, ProviderFetchOptions } from '../types
 import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import type { FileSystemAdapter } from '../types/config.js';
 import type { EventBus } from '../types/events.js';
+import type { DiscoveryService } from '../discovery/index.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
-
-interface DiscoveryLike {
-  discover(basePath: string, options?: { subpath?: string }): Promise<ReadonlyArray<{
-    readonly name: string;
-    readonly description: string;
-    readonly path: string;
-    readonly type: string;
-    readonly rawContent: string;
-    readonly metadata: Readonly<Record<string, unknown>>;
-  }>>;
-}
 
 export class LocalProvider implements HostProvider {
   readonly id = 'local';
@@ -23,7 +13,7 @@ export class LocalProvider implements HostProvider {
 
   constructor(
     private readonly fs: FileSystemAdapter,
-    private readonly discovery: DiscoveryLike,
+    private readonly discovery: DiscoveryService,
     private readonly eventBus: EventBus,
     private readonly cwd: string,
   ) {}
@@ -43,7 +33,10 @@ export class LocalProvider implements HostProvider {
     return { matches: false };
   }
 
-  async fetchCognitive(source: string, _options?: ProviderFetchOptions): Promise<RemoteCognitive | null> {
+  async fetchCognitive(
+    source: string,
+    _options?: ProviderFetchOptions,
+  ): Promise<RemoteCognitive | null> {
     const resolved = path.resolve(this.cwd, source);
     this.eventBus.emit('provider:fetch:start', { providerId: this.id, url: resolved });
 
@@ -51,9 +44,15 @@ export class LocalProvider implements HostProvider {
       const content = await this.fs.readFile(resolved, 'utf-8');
       const parsed = matter(content);
       const data = parsed.data as Record<string, unknown>;
-      const name = (typeof data['name'] === 'string' ? data['name'] : null) ?? path.basename(path.dirname(resolved));
+      const name =
+        (typeof data['name'] === 'string' ? data['name'] : null) ??
+        path.basename(path.dirname(resolved));
 
-      this.eventBus.emit('provider:fetch:complete', { providerId: this.id, url: resolved, found: true });
+      this.eventBus.emit('provider:fetch:complete', {
+        providerId: this.id,
+        url: resolved,
+        found: true,
+      });
 
       return {
         name,
@@ -67,7 +66,11 @@ export class LocalProvider implements HostProvider {
         metadata: Object.freeze({ ...data }),
       };
     } catch {
-      this.eventBus.emit('provider:fetch:complete', { providerId: this.id, url: resolved, found: false });
+      this.eventBus.emit('provider:fetch:complete', {
+        providerId: this.id,
+        url: resolved,
+        found: false,
+      });
       return null;
     }
   }

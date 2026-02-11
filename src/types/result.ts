@@ -34,11 +34,15 @@ export function mapResult<T, U, E extends CognitError>(
 }
 
 /** Type guard: is this result a success? */
-export function isOk<T, E extends CognitError>(result: Result<T, E>): result is { readonly ok: true; readonly value: T } {
+export function isOk<T, E extends CognitError>(
+  result: Result<T, E>,
+): result is { readonly ok: true; readonly value: T } {
   return result.ok;
 }
 
 /** Type guard: is this result a failure? */
-export function isErr<T, E extends CognitError>(result: Result<T, E>): result is { readonly ok: false; readonly error: E } {
+export function isErr<T, E extends CognitError>(
+  result: Result<T, E>,
+): result is { readonly ok: false; readonly error: E } {
   return !result.ok;
 }

@@ -12,10 +12,33 @@ export class LockFileManagerImpl implements LockManager {
   private readonly fs: SDKConfig['fs'];
   private readonly eventBus: EventBus;
 
+  /** Async mutex: queued write operations wait for the previous one to finish. */
+  private writeLock: Promise<void> = Promise.resolve();
+
   constructor(config: SDKConfig, eventBus: EventBus) {
     this.lockPath = join(config.cwd, '.agents', 'cognit', config.lockFileName);
     this.fs = config.fs;
     this.eventBus = eventBus;
+  }
+
+  /**
+   * Serializes an async callback through the write lock.
+   * Guarantees that only one read-modify-write cycle runs at a time.
+   */
+  private withWriteLock<T>(fn: () => Promise<T>): Promise<T> {
+    const prev = this.writeLock;
+    let resolve: () => void;
+    this.writeLock = new Promise<void>((r) => {
+      resolve = r;
+    });
+
+    return prev.then(async () => {
+      try {
+        return await fn();
+      } finally {
+        resolve!();
+      }
+    });
   }
 
   async read(): Promise<LockFile> {
@@ -44,30 +67,31 @@ export class LockFileManagerImpl implements LockManager {
     });
   }
 
-  async addEntry(
-    name: string,
-    entry: Omit<LockEntry, 'installedAt' | 'updatedAt'>,
-  ): Promise<void> {
-    const lock = await this.read();
-    const cognitives = { ...lock.cognitives };
-    const now = new Date().toISOString();
-    cognitives[name] = { ...entry, installedAt: now, updatedAt: now };
-    const updated: LockFile = { ...lock, cognitives };
-    await this.write(updated);
+  async addEntry(name: string, entry: Omit<LockEntry, 'installedAt' | 'updatedAt'>): Promise<void> {
+    return this.withWriteLock(async () => {
+      const lock = await this.read();
+      const cognitives = { ...lock.cognitives };
+      const now = new Date().toISOString();
+      cognitives[name] = { ...entry, installedAt: now, updatedAt: now };
+      const updated: LockFile = { ...lock, cognitives };
+      await this.write(updated);
+    });
   }
 
   async removeEntry(name: string): Promise<boolean> {
-    const lock = await this.read();
-    const cognitives = { ...lock.cognitives };
+    return this.withWriteLock(async () => {
+      const lock = await this.read();
+      const cognitives = { ...lock.cognitives };
 
-    if (!(name in cognitives)) {
-      return false;
-    }
+      if (!(name in cognitives)) {
+        return false;
+      }
 
-    delete cognitives[name];
-    const updated: LockFile = { ...lock, cognitives };
-    await this.write(updated);
-    return true;
+      delete cognitives[name];
+      const updated: LockFile = { ...lock, cognitives };
+      await this.write(updated);
+      return true;
+    });
   }
 
   async getEntry(name: string): Promise<LockEntry | null> {
@@ -106,8 +130,10 @@ export class LockFileManagerImpl implements LockManager {
   }
 
   async saveLastSelectedAgents(agents: readonly string[]): Promise<void> {
-    const lock = await this.read();
-    const updated: LockFile = { ...lock, lastSelectedAgents: agents };
-    await this.write(updated);
+    return this.withWriteLock(async () => {
+      const lock = await this.read();
+      const updated: LockFile = { ...lock, lastSelectedAgents: agents };
+      await this.write(updated);
+    });
   }
 }
