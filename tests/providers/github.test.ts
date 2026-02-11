@@ -27,37 +27,61 @@ function createMockDiscovery() {
 
 describe('GitHubProvider', () => {
   it('matches owner/repo shorthand', () => {
-    const provider = new GitHubProvider(createMockGitClient(), createMockDiscovery(), createCapturingEventBus());
+    const provider = new GitHubProvider(
+      createMockGitClient(),
+      createMockDiscovery(),
+      createCapturingEventBus(),
+    );
     const result = provider.match('owner/repo');
     expect(result.matches).toBe(true);
   });
 
   it('matches https://github.com/owner/repo', () => {
-    const provider = new GitHubProvider(createMockGitClient(), createMockDiscovery(), createCapturingEventBus());
+    const provider = new GitHubProvider(
+      createMockGitClient(),
+      createMockDiscovery(),
+      createCapturingEventBus(),
+    );
     const result = provider.match('https://github.com/owner/repo');
     expect(result.matches).toBe(true);
   });
 
   it('does NOT match gitlab URL', () => {
-    const provider = new GitHubProvider(createMockGitClient(), createMockDiscovery(), createCapturingEventBus());
+    const provider = new GitHubProvider(
+      createMockGitClient(),
+      createMockDiscovery(),
+      createCapturingEventBus(),
+    );
     const result = provider.match('https://gitlab.com/owner/repo');
     expect(result.matches).toBe(false);
   });
 
   it('does NOT match local path', () => {
-    const provider = new GitHubProvider(createMockGitClient(), createMockDiscovery(), createCapturingEventBus());
+    const provider = new GitHubProvider(
+      createMockGitClient(),
+      createMockDiscovery(),
+      createCapturingEventBus(),
+    );
     const result = provider.match('./local/path');
     expect(result.matches).toBe(false);
   });
 
   it('converts blob URL to raw URL', () => {
-    const provider = new GitHubProvider(createMockGitClient(), createMockDiscovery(), createCapturingEventBus());
+    const provider = new GitHubProvider(
+      createMockGitClient(),
+      createMockDiscovery(),
+      createCapturingEventBus(),
+    );
     const raw = provider.toRawUrl('https://github.com/owner/repo/blob/main/skills/test/SKILL.md');
     expect(raw).toBe('https://raw.githubusercontent.com/owner/repo/main/skills/test/SKILL.md');
   });
 
   it('extracts owner/repo from source identifier', () => {
-    const provider = new GitHubProvider(createMockGitClient(), createMockDiscovery(), createCapturingEventBus());
+    const provider = new GitHubProvider(
+      createMockGitClient(),
+      createMockDiscovery(),
+      createCapturingEventBus(),
+    );
     expect(provider.getSourceIdentifier('https://github.com/owner/repo')).toBe('owner/repo');
     expect(provider.getSourceIdentifier('owner/repo')).toBe('owner/repo');
   });

@@ -40,20 +40,23 @@ describe('MintlifyProvider', () => {
 
   describe('fetchCognitive', () => {
     it('throws ProviderNotImplementedError', async () => {
-      await expect(provider.fetchCognitive('https://mintlify.com/docs/path'))
-        .rejects.toThrow(ProviderNotImplementedError);
+      await expect(provider.fetchCognitive('https://mintlify.com/docs/path')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
 
     it('includes provider id in error', async () => {
-      await expect(provider.fetchCognitive('https://mintlify.com/docs/path'))
-        .rejects.toThrow('mintlify');
+      await expect(provider.fetchCognitive('https://mintlify.com/docs/path')).rejects.toThrow(
+        'mintlify',
+      );
     });
   });
 
   describe('fetchAll', () => {
     it('throws ProviderNotImplementedError', async () => {
-      await expect(provider.fetchAll('https://mintlify.com/docs/path'))
-        .rejects.toThrow(ProviderNotImplementedError);
+      await expect(provider.fetchAll('https://mintlify.com/docs/path')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
   });
 

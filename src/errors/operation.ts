@@ -8,7 +8,10 @@ export class OperationError extends CognitError {
 export class ConflictError extends OperationError {
   override readonly code = 'CONFLICT_ERROR';
 
-  constructor(readonly cognitiveName: string, readonly existingSource: string) {
+  constructor(
+    readonly cognitiveName: string,
+    readonly existingSource: string,
+  ) {
     super(`Cognitive "${cognitiveName}" already exists from source: ${existingSource}`);
   }
 }

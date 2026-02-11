@@ -26,10 +26,7 @@ export async function withRetry<T>(
       if (attempt >= opts.maxRetries) break;
       if (opts.shouldRetry && !opts.shouldRetry(error, attempt)) break;
 
-      const delay = Math.min(
-        opts.baseDelayMs * 2 ** attempt,
-        opts.maxDelayMs,
-      );
+      const delay = Math.min(opts.baseDelayMs * 2 ** attempt, opts.maxDelayMs);
       await sleep(delay);
     }
   }
@@ -40,7 +37,7 @@ export async function withRetry<T>(
 export function isRetryableNetworkError(error: unknown): boolean {
   if (error instanceof TypeError) return true; // fetch network errors
   if (error instanceof DOMException && error.name === 'AbortError') return false; // user-cancelled
-  const msg = (error instanceof Error) ? error.message : '';
+  const msg = error instanceof Error ? error.message : '';
   return /ECONNRESET|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|socket hang up/i.test(msg);
 }
 

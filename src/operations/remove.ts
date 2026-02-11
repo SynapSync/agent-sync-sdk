@@ -1,10 +1,6 @@
 import type { CognitError } from '../errors/base.js';
 import type { AgentType } from '../types/agent.js';
-import type {
-  RemoveOptions,
-  RemoveResult,
-  RemovedCognitiveInfo,
-} from '../types/operations.js';
+import type { RemoveOptions, RemoveResult, RemovedCognitiveInfo } from '../types/operations.js';
 import type { Result } from '../types/result.js';
 import { BaseOperation } from './base.js';
 
@@ -43,11 +39,7 @@ export class RemoveOperation extends BaseOperation {
       for (const agent of agents) {
         const target = { agent, scope, mode: 'copy' as const };
         try {
-          const success = await this.ctx.installer.remove(
-            name,
-            entry.cognitiveType,
-            target,
-          );
+          const success = await this.ctx.installer.remove(name, entry.cognitiveType, target);
           if (success) {
             removedAgents.push(agent);
           }
@@ -75,9 +67,7 @@ export class RemoveOperation extends BaseOperation {
     return { success, removed, notFound, message };
   }
 
-  private async resolveAgents(
-    agentsOption?: readonly AgentType[],
-  ): Promise<readonly AgentType[]> {
+  private async resolveAgents(agentsOption?: readonly AgentType[]): Promise<readonly AgentType[]> {
     if (agentsOption != null && agentsOption.length > 0) {
       return agentsOption;
     }

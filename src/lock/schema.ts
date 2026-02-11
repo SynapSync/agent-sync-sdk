@@ -17,9 +17,7 @@ export function makeLockKey(cognitiveType: CognitiveType, name: string): string 
  * Decompose a composite lock key back to its parts.
  * Returns `null` when the key is not in the expected `{type}:{name}` format.
  */
-export function parseLockKey(
-  key: string,
-): { cognitiveType: CognitiveType; name: string } | null {
+export function parseLockKey(key: string): { cognitiveType: CognitiveType; name: string } | null {
   const idx = key.indexOf(':');
   if (idx === -1) return null;
 
@@ -49,13 +47,19 @@ export function createEmptyLockFile(): LockFile {
  * Returns `true` when the shape has the required `version` (number) and
  * `cognitives` (object) properties.
  */
-export function validateLockFile(raw: unknown): raw is { version: number; cognitives: Record<string, unknown> } {
+export function validateLockFile(
+  raw: unknown,
+): raw is { version: number; cognitives: Record<string, unknown> } {
   if (raw == null || typeof raw !== 'object') return false;
 
   const obj = raw as Record<string, unknown>;
 
   if (typeof obj['version'] !== 'number') return false;
-  if (obj['cognitives'] == null || typeof obj['cognitives'] !== 'object' || Array.isArray(obj['cognitives'])) {
+  if (
+    obj['cognitives'] == null ||
+    typeof obj['cognitives'] !== 'object' ||
+    Array.isArray(obj['cognitives'])
+  ) {
     return false;
   }
 

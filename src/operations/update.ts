@@ -2,20 +2,13 @@ import type { CognitError } from '../errors/base.js';
 import type { LockEntry } from '../types/lock.js';
 import type { RemoteCognitive } from '../types/cognitive.js';
 import type { Result } from '../types/result.js';
-import type {
-  UpdateOptions,
-  UpdateResult,
-  UpdateInfo,
-  UpdateError,
-} from '../types/operations.js';
+import type { UpdateOptions, UpdateResult, UpdateInfo, UpdateError } from '../types/operations.js';
 import { OperationError } from '../errors/operation.js';
 import { computeContentHash } from '../lock/integrity.js';
 import { BaseOperation } from './base.js';
 
 export class UpdateOperation extends BaseOperation {
-  async execute(
-    options?: Partial<UpdateOptions>,
-  ): Promise<Result<UpdateResult, CognitError>> {
+  async execute(options?: Partial<UpdateOptions>): Promise<Result<UpdateResult, CognitError>> {
     return this.executeWithLifecycle('update', options, () => this.run(options));
   }
 
@@ -51,8 +44,7 @@ export class UpdateOperation extends BaseOperation {
           continue;
         }
 
-        const applied =
-          options?.checkOnly !== true && options?.confirmed === true;
+        const applied = options?.checkOnly !== true && options?.confirmed === true;
 
         if (applied) {
           await this.applyUpdate(name, entry, remote);
@@ -65,8 +57,7 @@ export class UpdateOperation extends BaseOperation {
           applied,
         });
       } catch (cause) {
-        const message =
-          cause instanceof Error ? cause.message : String(cause);
+        const message = cause instanceof Error ? cause.message : String(cause);
         errors.push({ name, error: message });
       }
     }
@@ -83,9 +74,7 @@ export class UpdateOperation extends BaseOperation {
   private async fetchRemote(entry: LockEntry): Promise<RemoteCognitive[]> {
     const provider = this.ctx.providerRegistry.findProvider(entry.sourceUrl);
     if (provider == null) {
-      throw new OperationError(
-        `No provider found for source URL: ${entry.sourceUrl}`,
-      );
+      throw new OperationError(`No provider found for source URL: ${entry.sourceUrl}`);
     }
 
     return provider.fetchAll(entry.sourceUrl, {

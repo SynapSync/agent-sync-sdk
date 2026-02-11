@@ -40,7 +40,11 @@ export interface AgentRegistry {
   getUniversalAgents(cognitiveType?: CognitiveType): AgentType[];
   getNonUniversalAgents(cognitiveType?: CognitiveType): AgentType[];
   isUniversal(type: AgentType, cognitiveType?: CognitiveType): boolean;
-  getDir(type: AgentType, cognitiveType: CognitiveType, scope: 'local' | 'global'): string | undefined;
+  getDir(
+    type: AgentType,
+    cognitiveType: CognitiveType,
+    scope: 'local' | 'global',
+  ): string | undefined;
   detectInstalled(): Promise<AgentDetectionResult[]>;
   register(config: AgentConfig): void;
 }

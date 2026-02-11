@@ -1,24 +1,18 @@
 import { join } from 'node:path';
 import type { CognitError } from '../errors/base.js';
 import type { Result } from '../types/result.js';
-import type {
-  CheckOptions,
-  CheckResult,
-  CheckIssue,
-} from '../types/operations.js';
+import type { CheckOptions, CheckResult, CheckIssue } from '../types/operations.js';
 import { COGNITIVE_SUBDIRS } from '../types/cognitive.js';
 import { sanitizeName } from '../installer/security.js';
 import { verifyContentHash } from '../lock/integrity.js';
 import { BaseOperation } from './base.js';
 
 export class CheckOperation extends BaseOperation {
-  async execute(
-    options?: Partial<CheckOptions>,
-  ): Promise<Result<CheckResult, CognitError>> {
+  async execute(options?: Partial<CheckOptions>): Promise<Result<CheckResult, CognitError>> {
     return this.executeWithLifecycle('check', options, () => this.run(options));
   }
 
-  private async run(options?: Partial<CheckOptions>): Promise<CheckResult> {
+  private async run(_options?: Partial<CheckOptions>): Promise<CheckResult> {
     const allEntries = await this.ctx.lockManager.getAllEntries();
     const healthy: string[] = [];
     const issues: CheckIssue[] = [];
@@ -77,10 +71,7 @@ export class CheckOperation extends BaseOperation {
     };
   }
 
-  private buildMessage(
-    healthy: readonly string[],
-    issues: readonly CheckIssue[],
-  ): string {
+  private buildMessage(healthy: readonly string[], issues: readonly CheckIssue[]): string {
     if (issues.length === 0) {
       return `All ${healthy.length} cognitive(s) are healthy`;
     }

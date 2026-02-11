@@ -130,9 +130,7 @@ describe('LockFileManagerImpl', () => {
       }));
 
       // Fire all addEntry calls concurrently
-      await Promise.all(
-        entries.map(({ name, data }) => manager.addEntry(name, data)),
-      );
+      await Promise.all(entries.map(({ name, data }) => manager.addEntry(name, data)));
 
       const all = await manager.getAllEntries();
       expect(Object.keys(all)).toHaveLength(10);
@@ -187,7 +185,9 @@ describe('LockFileManagerImpl', () => {
       };
 
       // First addEntry should fail
-      await expect(manager.addEntry('fail-skill', makeEntryData())).rejects.toThrow('Simulated write failure');
+      await expect(manager.addEntry('fail-skill', makeEntryData())).rejects.toThrow(
+        'Simulated write failure',
+      );
 
       // Second addEntry should succeed (lock released in finally)
       await manager.addEntry('ok-skill', makeEntryData());

@@ -14,10 +14,8 @@ export class InitOperation extends BaseOperation {
     cognitiveType: CognitiveType,
     options?: Partial<InitOptions>,
   ): Promise<Result<InitResult, CognitError>> {
-    return this.executeWithLifecycle(
-      'init',
-      { name, cognitiveType, ...options },
-      () => this.run(name, cognitiveType, options),
+    return this.executeWithLifecycle('init', { name, cognitiveType, ...options }, () =>
+      this.run(name, cognitiveType, options),
     );
   }
 
@@ -27,8 +25,7 @@ export class InitOperation extends BaseOperation {
     options?: Partial<InitOptions>,
   ): Promise<InitResult> {
     const safeName = sanitizeName(name);
-    const outputDir =
-      options?.outputDir != null ? options.outputDir : this.ctx.config.cwd;
+    const outputDir = options?.outputDir != null ? options.outputDir : this.ctx.config.cwd;
     const targetDir = join(outputDir, safeName);
 
     const exists = await this.ctx.config.fs.exists(targetDir);
@@ -41,9 +38,7 @@ export class InitOperation extends BaseOperation {
     const fileName = COGNITIVE_FILE_NAMES[cognitiveType];
     const filePath = join(targetDir, fileName);
     const description =
-      options?.description != null
-        ? options.description
-        : 'TODO: Add description';
+      options?.description != null ? options.description : 'TODO: Add description';
 
     const content = [
       '---',

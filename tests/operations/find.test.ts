@@ -19,9 +19,7 @@ import { safeName, sourceIdentifier } from '../../src/types/brands.js';
 import { isOk, isErr } from '../../src/types/result.js';
 import { FindOperation } from '../../src/operations/find.js';
 
-function createMockRemoteCognitive(
-  overrides?: Partial<RemoteCognitive>,
-): RemoteCognitive {
+function createMockRemoteCognitive(overrides?: Partial<RemoteCognitive>): RemoteCognitive {
   return {
     name: 'test-skill',
     description: 'A test skill',
@@ -50,9 +48,7 @@ function createMockProvider(
   };
 }
 
-function createMockLockEntry(
-  overrides?: Partial<LockEntry>,
-): LockEntry {
+function createMockLockEntry(overrides?: Partial<LockEntry>): LockEntry {
   return {
     source: sourceIdentifier('owner/repo'),
     sourceType: 'remote',
@@ -65,9 +61,7 @@ function createMockLockEntry(
   };
 }
 
-function createMockContext(
-  overrides?: Partial<OperationContext>,
-): OperationContext {
+function createMockContext(overrides?: Partial<OperationContext>): OperationContext {
   const eventBus = createCapturingEventBus();
   const fs = createMemoryFs();
 
@@ -139,7 +133,6 @@ function createMockContext(
     git: { cloneTimeoutMs: 30000, depth: 1 },
     providers: { custom: [] },
     agents: { additional: [] },
-    telemetry: { enabled: false },
   };
 
   return {
@@ -342,12 +335,8 @@ describe('FindOperation', () => {
     const op = new FindOperation(ctx);
     await op.execute('https://github.com/owner/repo');
 
-    const startEvents = eventBus.events.filter(
-      (e) => e.event === 'operation:start',
-    );
-    const completeEvents = eventBus.events.filter(
-      (e) => e.event === 'operation:complete',
-    );
+    const startEvents = eventBus.events.filter((e) => e.event === 'operation:start');
+    const completeEvents = eventBus.events.filter((e) => e.event === 'operation:complete');
 
     expect(startEvents).toHaveLength(1);
     expect(completeEvents).toHaveLength(1);
@@ -355,10 +344,7 @@ describe('FindOperation', () => {
     const startPayload = startEvents[0]?.payload as Record<string, unknown>;
     expect(startPayload['operation']).toBe('find');
 
-    const completePayload = completeEvents[0]?.payload as Record<
-      string,
-      unknown
-    >;
+    const completePayload = completeEvents[0]?.payload as Record<string, unknown>;
     expect(completePayload['operation']).toBe('find');
     expect(typeof completePayload['durationMs']).toBe('number');
   });

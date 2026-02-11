@@ -35,20 +35,23 @@ describe('HuggingFaceProvider', () => {
 
   describe('fetchCognitive', () => {
     it('throws ProviderNotImplementedError', async () => {
-      await expect(provider.fetchCognitive('https://huggingface.co/owner/repo'))
-        .rejects.toThrow(ProviderNotImplementedError);
+      await expect(provider.fetchCognitive('https://huggingface.co/owner/repo')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
 
     it('includes provider id in error', async () => {
-      await expect(provider.fetchCognitive('https://huggingface.co/owner/repo'))
-        .rejects.toThrow('huggingface');
+      await expect(provider.fetchCognitive('https://huggingface.co/owner/repo')).rejects.toThrow(
+        'huggingface',
+      );
     });
   });
 
   describe('fetchAll', () => {
     it('throws ProviderNotImplementedError', async () => {
-      await expect(provider.fetchAll('https://huggingface.co/owner/repo'))
-        .rejects.toThrow(ProviderNotImplementedError);
+      await expect(provider.fetchAll('https://huggingface.co/owner/repo')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
   });
 

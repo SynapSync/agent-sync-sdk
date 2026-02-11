@@ -12,8 +12,6 @@ import type {
   SourceInfo,
 } from '../types/operations.js';
 import type { Result } from '../types/result.js';
-import type { AgentType } from '../types/agent.js';
-import { NoCognitivesFoundError } from '../errors/provider.js';
 import { computeContentHash } from '../lock/integrity.js';
 import { BaseOperation } from './base.js';
 
@@ -25,19 +23,12 @@ export class AddOperation extends BaseOperation {
     return this.executeWithLifecycle('add', options, () => this.run(source, options));
   }
 
-  private async run(
-    source: string,
-    options?: Partial<AddOptions>,
-  ): Promise<AddResult> {
+  private async run(source: string, options?: Partial<AddOptions>): Promise<AddResult> {
     // 1. Parse source
     const parsed = this.ctx.sourceParser.parse(source);
 
     // 2. Resolve cognitives
-    const { cognitives, sourceInfo } = await this.resolveCognitives(
-      source,
-      parsed,
-      options,
-    );
+    const { cognitives, sourceInfo } = await this.resolveCognitives(source, parsed, options);
 
     if (cognitives.length === 0) {
       return {
@@ -104,16 +95,10 @@ export class AddOperation extends BaseOperation {
 
         let result: InstallResult;
         try {
-          result = await this.ctx.installer.install(
-            request,
-            target,
-            installerOptions,
-          );
+          result = await this.ctx.installer.install(request, target, installerOptions);
         } catch (installError) {
           const errorMsg =
-            installError instanceof Error
-              ? installError.message
-              : String(installError);
+            installError instanceof Error ? installError.message : String(installError);
           failed.push({ name: cogName, agent, error: errorMsg });
           continue;
         }
@@ -193,10 +178,7 @@ export class AddOperation extends BaseOperation {
           types: [options.cognitiveType],
         }),
       };
-      const cognitives = await this.ctx.discoveryService.discover(
-        localPath,
-        discoverOptions,
-      );
+      const cognitives = await this.ctx.discoveryService.discover(localPath, discoverOptions);
 
       return {
         cognitives,
@@ -240,11 +222,7 @@ export class AddOperation extends BaseOperation {
     }
 
     // Git clone fallback
-    if (
-      parsed.kind === 'git' ||
-      parsed.kind === 'github' ||
-      parsed.kind === 'gitlab'
-    ) {
+    if (parsed.kind === 'git' || parsed.kind === 'github' || parsed.kind === 'gitlab') {
       const tempDir = await this.ctx.gitClient.clone(parsed.url, {
         ...(parsed.ref != null && { ref: parsed.ref }),
       });
@@ -257,10 +235,7 @@ export class AddOperation extends BaseOperation {
             types: [options.cognitiveType],
           }),
         };
-        const cognitives = await this.ctx.discoveryService.discover(
-          tempDir,
-          discoverOptions,
-        );
+        const cognitives = await this.ctx.discoveryService.discover(tempDir, discoverOptions);
 
         return {
           cognitives,
@@ -304,12 +279,8 @@ export class AddOperation extends BaseOperation {
 
     // Filter by cognitiveNames from options
     if (options?.cognitiveNames != null && options.cognitiveNames.length > 0) {
-      const nameSet = new Set(
-        options.cognitiveNames.map((n) => n.toLowerCase()),
-      );
-      result = result.filter((c) =>
-        nameSet.has(getCognitiveName(c).toLowerCase()),
-      );
+      const nameSet = new Set(options.cognitiveNames.map((n) => n.toLowerCase()));
+      result = result.filter((c) => nameSet.has(getCognitiveName(c).toLowerCase()));
     }
 
     // Filter by cognitiveType from options
@@ -330,9 +301,7 @@ export class AddOperation extends BaseOperation {
 
 // ---------- Helpers ----------
 
-function isRemoteCognitive(
-  c: RemoteCognitive | Cognitive,
-): c is RemoteCognitive {
+function isRemoteCognitive(c: RemoteCognitive | Cognitive): c is RemoteCognitive {
   return 'content' in c && 'installName' in c;
 }
 
@@ -348,9 +317,7 @@ function getCognitiveType(c: RemoteCognitive | Cognitive): CognitiveType {
   return c.type;
 }
 
-function buildInstallRequest(
-  c: RemoteCognitive | Cognitive,
-): InstallRequest {
+function buildInstallRequest(c: RemoteCognitive | Cognitive): InstallRequest {
   if (isRemoteCognitive(c)) {
     return { kind: 'remote', cognitive: c };
   }

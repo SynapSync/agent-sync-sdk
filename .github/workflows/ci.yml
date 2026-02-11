@@ -28,6 +28,12 @@ jobs:
       - name: Compile agent definitions
         run: pnpm run compile-agents
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm prettier --check "src/**/*.ts" "tests/**/*.ts"
+
       - name: Type check
         run: pnpm tsc --noEmit
 

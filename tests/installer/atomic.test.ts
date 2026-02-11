@@ -8,9 +8,10 @@ import type { FileSystemAdapter } from '../../src/types/config.js';
  * Create a proxy FS that delegates to a base in-memory FS,
  * with optional method overrides for injecting failures.
  */
-function createFailingFs(
-  overrides: Partial<FileSystemAdapter>,
-): { base: FileSystemAdapter; fs: FileSystemAdapter } {
+function createFailingFs(overrides: Partial<FileSystemAdapter>): {
+  base: FileSystemAdapter;
+  fs: FileSystemAdapter;
+} {
   const base = createMemoryFs();
   const fs: FileSystemAdapter = {
     readFile: (p, e) => base.readFile(p, e),
@@ -58,7 +59,8 @@ describe('atomicWriteFile()', () => {
   // ---- Error-path tests (Sprint 8 additions) ----
 
   it('error during write cleans up temp file and throws FileWriteError', async () => {
-    const rmSpy = vi.fn<(path: string, opts?: { recursive?: boolean; force?: boolean }) => Promise<void>>();
+    const rmSpy =
+      vi.fn<(path: string, opts?: { recursive?: boolean; force?: boolean }) => Promise<void>>();
     const { base, fs } = createFailingFs({
       writeFile: vi.fn().mockRejectedValue(new Error('disk full')),
       rm: async (p, o) => {
@@ -76,7 +78,8 @@ describe('atomicWriteFile()', () => {
   });
 
   it('error during rename cleans up temp file and throws FileWriteError', async () => {
-    const rmSpy = vi.fn<(path: string, opts?: { recursive?: boolean; force?: boolean }) => Promise<void>>();
+    const rmSpy =
+      vi.fn<(path: string, opts?: { recursive?: boolean; force?: boolean }) => Promise<void>>();
     const { base, fs } = createFailingFs({
       rename: vi.fn().mockRejectedValue(new Error('EXDEV')),
       rm: async (p, o) => {

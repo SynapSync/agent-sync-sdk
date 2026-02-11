@@ -33,7 +33,10 @@ export class LocalProvider implements HostProvider {
     return { matches: false };
   }
 
-  async fetchCognitive(source: string, _options?: ProviderFetchOptions): Promise<RemoteCognitive | null> {
+  async fetchCognitive(
+    source: string,
+    _options?: ProviderFetchOptions,
+  ): Promise<RemoteCognitive | null> {
     const resolved = path.resolve(this.cwd, source);
     this.eventBus.emit('provider:fetch:start', { providerId: this.id, url: resolved });
 
@@ -41,9 +44,15 @@ export class LocalProvider implements HostProvider {
       const content = await this.fs.readFile(resolved, 'utf-8');
       const parsed = matter(content);
       const data = parsed.data as Record<string, unknown>;
-      const name = (typeof data['name'] === 'string' ? data['name'] : null) ?? path.basename(path.dirname(resolved));
+      const name =
+        (typeof data['name'] === 'string' ? data['name'] : null) ??
+        path.basename(path.dirname(resolved));
 
-      this.eventBus.emit('provider:fetch:complete', { providerId: this.id, url: resolved, found: true });
+      this.eventBus.emit('provider:fetch:complete', {
+        providerId: this.id,
+        url: resolved,
+        found: true,
+      });
 
       return {
         name,
@@ -57,7 +66,11 @@ export class LocalProvider implements HostProvider {
         metadata: Object.freeze({ ...data }),
       };
     } catch {
-      this.eventBus.emit('provider:fetch:complete', { providerId: this.id, url: resolved, found: false });
+      this.eventBus.emit('provider:fetch:complete', {
+        providerId: this.id,
+        url: resolved,
+        found: false,
+      });
       return null;
     }
   }

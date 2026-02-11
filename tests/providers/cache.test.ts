@@ -50,7 +50,7 @@ describe('CloneCache', () => {
 
     await cache.getOrClone('https://github.com/owner/repo.git', undefined, gitClient);
     // Wait a tick to ensure Date.now() has advanced
-    await new Promise(r => setTimeout(r, 5));
+    await new Promise((r) => setTimeout(r, 5));
     await cache.getOrClone('https://github.com/owner/repo.git', undefined, gitClient);
 
     expect(gitClient.clone).toHaveBeenCalledTimes(2);

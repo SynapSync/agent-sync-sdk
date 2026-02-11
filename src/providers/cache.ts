@@ -58,12 +58,24 @@ export class CloneCache {
     const key = this.cacheKey(url, ref);
     const metaPath = join(this.cacheDir, `${key}.meta.json`);
     const cachePath = join(this.cacheDir, key);
-    try { await this.fs.rm(metaPath, { force: true }); } catch { /* ignore */ }
-    try { await this.fs.rm(cachePath, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      await this.fs.rm(metaPath, { force: true });
+    } catch {
+      /* ignore */
+    }
+    try {
+      await this.fs.rm(cachePath, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   }
 
   async clear(): Promise<void> {
-    try { await this.fs.rm(this.cacheDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      await this.fs.rm(this.cacheDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   }
 
   private cacheKey(url: string, ref?: string): string {
@@ -101,10 +113,11 @@ export class FetchCache {
     }
 
     const response = await withRetry(
-      () => fetch(url, {
-        signal: AbortSignal.timeout(this.fetchTimeoutMs),
-        headers: { 'User-Agent': 'agent-sync-sdk' },
-      }),
+      () =>
+        fetch(url, {
+          signal: AbortSignal.timeout(this.fetchTimeoutMs),
+          headers: { 'User-Agent': 'agent-sync-sdk' },
+        }),
       { shouldRetry: (err) => isRetryableNetworkError(err) },
     );
     if (!response.ok) throw new Error(`Fetch failed: ${url} (${response.status})`);
@@ -125,7 +138,11 @@ export class FetchCache {
   }
 
   async clear(): Promise<void> {
-    try { await this.fs.rm(this.cacheDir, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      await this.fs.rm(this.cacheDir, { recursive: true, force: true });
+    } catch {
+      /* ignore */
+    }
   }
 
   private cacheKey(url: string): string {

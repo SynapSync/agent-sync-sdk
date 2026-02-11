@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { createMemoryFs } from '../../src/fs/memory.js';
-import { getCanonicalPath, getAgentInstallPath, findProjectRoot } from '../../src/installer/paths.js';
+import {
+  getCanonicalPath,
+  getAgentInstallPath,
+  findProjectRoot,
+} from '../../src/installer/paths.js';
 import type { AgentRegistry } from '../../src/types/agent.js';
 import type { CognitiveType } from '../../src/types/cognitive.js';
 

@@ -1,20 +1,14 @@
 import { join } from 'node:path';
 import type { CognitError } from '../errors/base.js';
 import type { Result } from '../types/result.js';
-import type {
-  SyncOptions,
-  SyncResult,
-  SyncIssue,
-} from '../types/operations.js';
+import type { SyncOptions, SyncResult, SyncIssue } from '../types/operations.js';
 import { COGNITIVE_SUBDIRS } from '../types/cognitive.js';
 import { sanitizeName } from '../installer/security.js';
 import { verifyContentHash } from '../lock/integrity.js';
 import { BaseOperation } from './base.js';
 
 export class SyncOperation extends BaseOperation {
-  async execute(
-    options?: Partial<SyncOptions>,
-  ): Promise<Result<SyncResult, CognitError>> {
+  async execute(options?: Partial<SyncOptions>): Promise<Result<SyncResult, CognitError>> {
     return this.executeWithLifecycle('sync', options, () => this.run(options));
   }
 
@@ -40,8 +34,7 @@ export class SyncOperation extends BaseOperation {
 
       const exists = await this.ctx.config.fs.exists(canonicalPath);
       if (!exists) {
-        const shouldFix =
-          options?.dryRun !== true && options?.confirmed === true;
+        const shouldFix = options?.dryRun !== true && options?.confirmed === true;
 
         issues.push({
           name,
@@ -60,8 +53,7 @@ export class SyncOperation extends BaseOperation {
       );
 
       if (!hashValid) {
-        const shouldFix =
-          options?.dryRun !== true && options?.confirmed === true;
+        const shouldFix = options?.dryRun !== true && options?.confirmed === true;
 
         issues.push({
           name,
