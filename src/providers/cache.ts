@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import type { FileSystemAdapter } from '../types/config.js';
 import type { GitClient } from '../types/source.js';
+import { withRetry, isRetryableNetworkError } from '../utils/retry.js';
 
 export interface CacheMeta {
   readonly createdAt: number;
@@ -99,10 +100,13 @@ export class FetchCache {
       // Cache miss
     }
 
-    const response = await fetch(url, {
-      signal: AbortSignal.timeout(this.fetchTimeoutMs),
-      headers: { 'User-Agent': 'agent-sync-sdk' },
-    });
+    const response = await withRetry(
+      () => fetch(url, {
+        signal: AbortSignal.timeout(this.fetchTimeoutMs),
+        headers: { 'User-Agent': 'agent-sync-sdk' },
+      }),
+      { shouldRetry: (err) => isRetryableNetworkError(err) },
+    );
     if (!response.ok) throw new Error(`Fetch failed: ${url} (${response.status})`);
     const content = await response.text();
 

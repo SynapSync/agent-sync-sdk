@@ -2,20 +2,11 @@ import matter from 'gray-matter';
 import type { HostProvider, ProviderMatch, ProviderFetchOptions, GitClient } from '../types/source.js';
 import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import type { EventBus } from '../types/events.js';
+import type { DiscoveryService } from '../discovery/index.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
 import { ProviderFetchError, NoCognitivesFoundError } from '../errors/provider.js';
 import { isCognitiveType } from '../types/cognitive.js';
-
-interface DiscoveryLike {
-  discover(basePath: string, options?: { subpath?: string }): Promise<ReadonlyArray<{
-    readonly name: string;
-    readonly description: string;
-    readonly path: string;
-    readonly type: string;
-    readonly rawContent: string;
-    readonly metadata: Readonly<Record<string, unknown>>;
-  }>>;
-}
+import { withRetry, isRetryableNetworkError } from '../utils/retry.js';
 
 const GITHUB_URL_RE = /^https?:\/\/github\.com\/([^/]+)\/([^/]+)/;
 const SHORTHAND_RE = /^([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)/;
@@ -27,7 +18,7 @@ export class GitHubProvider implements HostProvider {
 
   constructor(
     private readonly gitClient: GitClient,
-    private readonly discovery: DiscoveryLike,
+    private readonly discovery: DiscoveryService,
     private readonly eventBus: EventBus,
     private readonly fetchTimeoutMs: number = 15_000,
   ) {}
@@ -55,10 +46,10 @@ export class GitHubProvider implements HostProvider {
 
     try {
       const signal = options?.signal ?? AbortSignal.timeout(this.fetchTimeoutMs);
-      const response = await fetch(rawUrl, {
-        signal,
-        headers: { 'User-Agent': 'agent-sync-sdk' },
-      });
+      const response = await withRetry(
+        () => fetch(rawUrl, { signal, headers: { 'User-Agent': 'agent-sync-sdk' } }),
+        { shouldRetry: (err) => isRetryableNetworkError(err) },
+      );
       if (!response.ok) {
         this.eventBus.emit('provider:fetch:error', { providerId: this.id, url: rawUrl, error: `HTTP ${response.status}` });
         return null;

@@ -31,6 +31,10 @@ export interface Dirent {
   isSymbolicLink(): boolean;
 }
 
+// ---------- Environment ----------
+
+export type EnvReader = (key: string) => string | undefined;
+
 // ---------- SDKConfig ----------
 
 export interface SDKConfig {
@@ -45,6 +49,8 @@ export interface SDKConfig {
   readonly telemetry: Readonly<TelemetryConfig>;
   /** Timeout in milliseconds for HTTP fetch calls. Default: 15000 (15s). */
   readonly fetchTimeoutMs: number;
+  /** Injectable environment variable reader. Default: reads from process.env. */
+  readonly env: EnvReader;
 }
 
 export interface GitConfig {

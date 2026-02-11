@@ -2,6 +2,7 @@ import type { HostProvider, ProviderMatch, ProviderFetchOptions } from '../types
 import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
 import { isCognitiveType } from '../types/cognitive.js';
+import { withRetry, isRetryableNetworkError } from '../utils/retry.js';
 
 const KNOWN_GIT_HOSTS = new Set(['github.com', 'gitlab.com', 'bitbucket.org', 'huggingface.co']);
 
@@ -79,10 +80,13 @@ export class WellKnownProvider implements HostProvider {
 
   private async fetchIndex(indexUrl: string): Promise<WellKnownIndex | null> {
     try {
-      const response = await fetch(indexUrl, {
-        signal: AbortSignal.timeout(this.fetchTimeoutMs),
-        headers: { 'User-Agent': 'agent-sync-sdk' },
-      });
+      const response = await withRetry(
+        () => fetch(indexUrl, {
+          signal: AbortSignal.timeout(this.fetchTimeoutMs),
+          headers: { 'User-Agent': 'agent-sync-sdk' },
+        }),
+        { shouldRetry: (err) => isRetryableNetworkError(err) },
+      );
       if (!response.ok) return null;
       const data: unknown = await response.json();
       if (!this.isValidIndex(data)) return null;

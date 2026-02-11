@@ -7,42 +7,14 @@ import type {
   DiscoveredCognitive,
 } from '../types/operations.js';
 import type { Result } from '../types/result.js';
-import type { OperationContext } from './context.js';
-import { ok, err } from '../types/result.js';
-import { OperationError } from '../errors/operation.js';
+import { BaseOperation } from './base.js';
 
-export class FindOperation {
-  constructor(private readonly ctx: OperationContext) {}
-
+export class FindOperation extends BaseOperation {
   async execute(
     source: string,
     options?: Partial<FindOptions>,
   ): Promise<Result<FindResult, CognitError>> {
-    const start = Date.now();
-    this.ctx.eventBus.emit('operation:start', { operation: 'find', options });
-
-    try {
-      const result = await this.run(source, options);
-      this.ctx.eventBus.emit('operation:complete', {
-        operation: 'find',
-        result,
-        durationMs: Date.now() - start,
-      });
-      return ok(result);
-    } catch (error) {
-      const opError =
-        error instanceof OperationError
-          ? error
-          : new OperationError(
-              error instanceof Error ? error.message : String(error),
-              ...(error instanceof Error ? [{ cause: error }] : []),
-            );
-      this.ctx.eventBus.emit('operation:error', {
-        operation: 'find',
-        error: opError,
-      });
-      return err(opError);
-    }
+    return this.executeWithLifecycle('find', options, () => this.run(source, options));
   }
 
   private async run(

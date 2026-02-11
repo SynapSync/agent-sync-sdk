@@ -2,6 +2,7 @@ import { homedir } from 'node:os';
 import type {
   SDKConfig,
   FileSystemAdapter,
+  EnvReader,
   ProviderConfig,
   AgentRegistryConfig,
   TelemetryConfig,
@@ -16,15 +17,18 @@ import {
   DEFAULT_FETCH_TIMEOUT_MS,
 } from './defaults.js';
 
-function detectGitHubToken(): string | undefined {
-  return process.env['GITHUB_TOKEN']?.trim() || process.env['GH_TOKEN']?.trim() || undefined;
+const defaultEnvReader: EnvReader = (key) => process.env[key];
+
+function detectGitHubToken(env: EnvReader): string | undefined {
+  return env('GITHUB_TOKEN')?.trim() || env('GH_TOKEN')?.trim() || undefined;
 }
 
 export function resolveConfig(
   partial?: Partial<SDKConfig>,
   defaultFs?: FileSystemAdapter,
 ): SDKConfig {
-  const resolvedToken = partial?.providers?.githubToken ?? detectGitHubToken();
+  const env = partial?.env ?? defaultEnvReader;
+  const resolvedToken = partial?.providers?.githubToken ?? detectGitHubToken(env);
   const providers: ProviderConfig = resolvedToken != null
     ? { githubToken: resolvedToken, custom: partial?.providers?.custom ?? [] }
     : { custom: partial?.providers?.custom ?? [] };
@@ -51,6 +55,7 @@ export function resolveConfig(
     agents,
     telemetry,
     fetchTimeoutMs: partial?.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS,
+    env,
   };
 
   validateConfig(config);

@@ -6,42 +6,14 @@ import type {
   RemovedCognitiveInfo,
 } from '../types/operations.js';
 import type { Result } from '../types/result.js';
-import type { OperationContext } from './context.js';
-import { ok, err } from '../types/result.js';
-import { OperationError } from '../errors/operation.js';
+import { BaseOperation } from './base.js';
 
-export class RemoveOperation {
-  constructor(private readonly ctx: OperationContext) {}
-
+export class RemoveOperation extends BaseOperation {
   async execute(
     names: readonly string[],
     options?: Partial<RemoveOptions>,
   ): Promise<Result<RemoveResult, CognitError>> {
-    const start = Date.now();
-    this.ctx.eventBus.emit('operation:start', { operation: 'remove', options });
-
-    try {
-      const result = await this.run(names, options);
-      this.ctx.eventBus.emit('operation:complete', {
-        operation: 'remove',
-        result,
-        durationMs: Date.now() - start,
-      });
-      return ok(result);
-    } catch (error) {
-      const opError =
-        error instanceof OperationError
-          ? error
-          : new OperationError(
-              error instanceof Error ? error.message : String(error),
-              ...(error instanceof Error ? [{ cause: error }] : []),
-            );
-      this.ctx.eventBus.emit('operation:error', {
-        operation: 'remove',
-        error: opError,
-      });
-      return err(opError);
-    }
+    return this.executeWithLifecycle('remove', options, () => this.run(names, options));
   }
 
   private async run(

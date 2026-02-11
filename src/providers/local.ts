@@ -4,18 +4,8 @@ import type { HostProvider, ProviderMatch, ProviderFetchOptions } from '../types
 import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import type { FileSystemAdapter } from '../types/config.js';
 import type { EventBus } from '../types/events.js';
+import type { DiscoveryService } from '../discovery/index.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
-
-interface DiscoveryLike {
-  discover(basePath: string, options?: { subpath?: string }): Promise<ReadonlyArray<{
-    readonly name: string;
-    readonly description: string;
-    readonly path: string;
-    readonly type: string;
-    readonly rawContent: string;
-    readonly metadata: Readonly<Record<string, unknown>>;
-  }>>;
-}
 
 export class LocalProvider implements HostProvider {
   readonly id = 'local';
@@ -23,7 +13,7 @@ export class LocalProvider implements HostProvider {
 
   constructor(
     private readonly fs: FileSystemAdapter,
-    private readonly discovery: DiscoveryLike,
+    private readonly discovery: DiscoveryService,
     private readonly eventBus: EventBus,
     private readonly cwd: string,
   ) {}

@@ -6,107 +6,82 @@ import type {
   SyncResult,
   SyncIssue,
 } from '../types/operations.js';
-import type { OperationContext } from './context.js';
-import { ok, err } from '../types/result.js';
-import { OperationError } from '../errors/operation.js';
 import { COGNITIVE_SUBDIRS } from '../types/cognitive.js';
 import { sanitizeName } from '../installer/security.js';
 import { verifyContentHash } from '../lock/integrity.js';
+import { BaseOperation } from './base.js';
 
-export class SyncOperation {
-  constructor(private readonly ctx: OperationContext) {}
-
+export class SyncOperation extends BaseOperation {
   async execute(
     options?: Partial<SyncOptions>,
   ): Promise<Result<SyncResult, CognitError>> {
-    const startTime = Date.now();
-    const opName = 'sync';
+    return this.executeWithLifecycle('sync', options, () => this.run(options));
+  }
 
-    this.ctx.eventBus.emit('operation:start', {
-      operation: opName,
-      options: options as unknown,
-    });
+  private async run(options?: Partial<SyncOptions>): Promise<SyncResult> {
+    const allEntries = await this.ctx.lockManager.getAllEntries();
+    const issues: SyncIssue[] = [];
 
-    try {
-      const allEntries = await this.ctx.lockManager.getAllEntries();
-      const issues: SyncIssue[] = [];
+    for (const name of Object.keys(allEntries)) {
+      const entry = allEntries[name];
+      if (entry == null) continue;
 
-      for (const name of Object.keys(allEntries)) {
-        const entry = allEntries[name];
-        if (entry == null) continue;
+      const subdir = COGNITIVE_SUBDIRS[entry.cognitiveType];
+      const safeName = sanitizeName(name);
+      const category = entry.category ?? 'general';
+      const canonicalPath = join(
+        this.ctx.config.cwd,
+        '.agents',
+        'cognit',
+        subdir,
+        category,
+        safeName,
+      );
 
-        const subdir = COGNITIVE_SUBDIRS[entry.cognitiveType];
-        const safeName = sanitizeName(name);
-        const category = entry.category ?? 'general';
-        const canonicalPath = join(
-          this.ctx.config.cwd,
-          '.agents',
-          'cognit',
-          subdir,
-          category,
-          safeName,
-        );
+      const exists = await this.ctx.config.fs.exists(canonicalPath);
+      if (!exists) {
+        const shouldFix =
+          options?.dryRun !== true && options?.confirmed === true;
 
-        const exists = await this.ctx.config.fs.exists(canonicalPath);
-        if (!exists) {
-          const shouldFix =
-            options?.dryRun !== true && options?.confirmed === true;
+        issues.push({
+          name,
+          type: 'missing_files',
+          description: `Canonical path does not exist: ${canonicalPath}`,
+          fixed: shouldFix,
+        });
 
-          issues.push({
-            name,
-            type: 'missing_files',
-            description: `Canonical path does not exist: ${canonicalPath}`,
-            fixed: shouldFix,
-          });
-
-          continue;
-        }
-
-        const hashValid = await verifyContentHash(
-          canonicalPath,
-          entry.contentHash,
-          this.ctx.config.fs,
-        );
-
-        if (!hashValid) {
-          const shouldFix =
-            options?.dryRun !== true && options?.confirmed === true;
-
-          issues.push({
-            name,
-            type: 'lock_mismatch',
-            description: `Content hash mismatch for "${name}" at ${canonicalPath}`,
-            fixed: shouldFix,
-          });
-        }
+        continue;
       }
 
-      const fixedCount = issues.filter((i) => i.fixed).length;
-      const remainingCount = issues.length - fixedCount;
+      const hashValid = await verifyContentHash(
+        canonicalPath,
+        entry.contentHash,
+        this.ctx.config.fs,
+      );
 
-      const result: SyncResult = {
-        success: remainingCount === 0,
-        issues,
-        fixed: fixedCount,
-        remaining: remainingCount,
-        message: this.buildMessage(issues, fixedCount, remainingCount, options),
-      };
+      if (!hashValid) {
+        const shouldFix =
+          options?.dryRun !== true && options?.confirmed === true;
 
-      this.ctx.eventBus.emit('operation:complete', {
-        operation: opName,
-        result: result as unknown,
-        durationMs: Date.now() - startTime,
-      });
-
-      return ok(result);
-    } catch (cause) {
-      const error = new OperationError('Sync operation failed', { cause });
-      this.ctx.eventBus.emit('operation:error', {
-        operation: opName,
-        error,
-      });
-      return err(error);
+        issues.push({
+          name,
+          type: 'lock_mismatch',
+          description: `Content hash mismatch for "${name}" at ${canonicalPath}`,
+          fixed: shouldFix,
+        });
+      }
     }
+
+    const fixedCount = issues.filter((i) => i.fixed).length;
+    const remainingCount = issues.length - fixedCount;
+
+    return {
+      success: remainingCount === 0,
+      issues,
+      fixed: fixedCount,
+      remaining: remainingCount,
+      message: this.buildMessage(issues, fixedCount, remainingCount, options),
+    };
   }
 
   private buildMessage(
