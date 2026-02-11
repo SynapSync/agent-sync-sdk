@@ -41,3 +41,14 @@ export class NoCognitivesFoundError extends ProviderError {
     super(`No cognitives found at: ${source}`, providerId);
   }
 }
+
+export class ProviderNotImplementedError extends ProviderError {
+  override readonly code = 'PROVIDER_NOT_IMPLEMENTED';
+
+  constructor(providerId: string) {
+    super(
+      `Provider "${providerId}" is not yet implemented. This source cannot be fetched at this time.`,
+      providerId,
+    );
+  }
+}
