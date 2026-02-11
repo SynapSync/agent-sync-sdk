@@ -44,7 +44,7 @@ The SDK follows a layered architecture with a composition root pattern. All depe
 ### Layer 2: Agent Registry
 
 - **`AgentRegistryImpl`** -- Manages 39 auto-generated agent configs plus custom agents.
-- Agent configs are generated at build time from YAML definitions via `src/agents/definitions/compile.ts`.
+- Agent configs are generated at build time from YAML definitions via `src/agents/compile/compile.ts`.
 - Each agent defines: `name`, `displayName`, `localRoot`, `globalRoot`, detect rules, and dirs per cognitive type.
 - Universal agents use `.agents` as `localRoot`; non-universal agents use agent-specific directories (e.g., `.cursor`).
 
@@ -83,16 +83,16 @@ Each operation is an independent class receiving an `OperationContext`.
 
 **OperationContext** contains: `agentRegistry`, `providerRegistry`, `sourceParser`, `gitClient`, `discoveryService`, `installer`, `lockManager`, `eventBus`, `config`.
 
-| Operation | Description |
-|-----------|-------------|
-| `AddOperation` | Resolve source, fetch cognitives, install canonical + symlinks, update lock. |
-| `RemoveOperation` | Remove symlinks from agents, remove canonical directory, remove lock entry. |
-| `ListOperation` | Read lock file, return installed cognitives. |
-| `FindOperation` | Resolve source, discover available cognitives, mark installed ones. |
-| `UpdateOperation` | Compare content hashes, re-fetch changed cognitives, re-install. |
-| `SyncOperation` | Verify symlink integrity, fix broken links, reconcile lock with filesystem. |
-| `CheckOperation` | Health check: verify canonical dirs, symlinks, hashes, lock consistency. |
-| `InitOperation` | Scaffold new cognitive file with frontmatter template. |
+| Operation         | Description                                                                  |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `AddOperation`    | Resolve source, fetch cognitives, install canonical + symlinks, update lock. |
+| `RemoveOperation` | Remove symlinks from agents, remove canonical directory, remove lock entry.  |
+| `ListOperation`   | Read lock file, return installed cognitives.                                 |
+| `FindOperation`   | Resolve source, discover available cognitives, mark installed ones.          |
+| `UpdateOperation` | Compare content hashes, re-fetch changed cognitives, re-install.             |
+| `SyncOperation`   | Verify symlink integrity, fix broken links, reconcile lock with filesystem.  |
+| `CheckOperation`  | Health check: verify canonical dirs, symlinks, hashes, lock consistency.     |
+| `InitOperation`   | Scaffold new cognitive file with frontmatter template.                       |
 
 All operations return `Result<T, CognitError>` and emit operation lifecycle events.
 
@@ -149,9 +149,9 @@ sdk.add("owner/repo", { agents: ["cursor", "claude-code"] })
 
 Two implementations of the `FileSystemAdapter` interface:
 
-| Implementation | Purpose |
-|----------------|---------|
-| `NodeFileSystem` | Wraps `node:fs/promises` for real filesystem operations. |
+| Implementation     | Purpose                                                   |
+| ------------------ | --------------------------------------------------------- |
+| `NodeFileSystem`   | Wraps `node:fs/promises` for real filesystem operations.  |
 | `createMemoryFs()` | In-memory implementation for testing (used by 458 tests). |
 
 ## Directory Structure
