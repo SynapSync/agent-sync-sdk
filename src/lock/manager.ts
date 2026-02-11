@@ -28,7 +28,9 @@ export class LockFileManagerImpl implements LockManager {
   private withWriteLock<T>(fn: () => Promise<T>): Promise<T> {
     const prev = this.writeLock;
     let resolve: () => void;
-    this.writeLock = new Promise<void>((r) => { resolve = r; });
+    this.writeLock = new Promise<void>((r) => {
+      resolve = r;
+    });
 
     return prev.then(async () => {
       try {
@@ -65,10 +67,7 @@ export class LockFileManagerImpl implements LockManager {
     });
   }
 
-  async addEntry(
-    name: string,
-    entry: Omit<LockEntry, 'installedAt' | 'updatedAt'>,
-  ): Promise<void> {
+  async addEntry(name: string, entry: Omit<LockEntry, 'installedAt' | 'updatedAt'>): Promise<void> {
     return this.withWriteLock(async () => {
       const lock = await this.read();
       const cognitives = { ...lock.cognitives };

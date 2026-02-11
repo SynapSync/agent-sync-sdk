@@ -19,7 +19,10 @@ export class HuggingFaceProvider implements HostProvider {
     return { matches: false };
   }
 
-  async fetchCognitive(_source: string, _options?: ProviderFetchOptions): Promise<RemoteCognitive | null> {
+  async fetchCognitive(
+    _source: string,
+    _options?: ProviderFetchOptions,
+  ): Promise<RemoteCognitive | null> {
     throw new ProviderNotImplementedError(this.id);
   }
 

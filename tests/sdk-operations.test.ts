@@ -10,7 +10,6 @@ describe('SDK Operations', () => {
       cwd: '/project',
       homeDir: '/home/user',
       fs,
-      telemetry: { enabled: false },
     });
     return { sdk, fs };
   }
@@ -38,9 +37,7 @@ describe('SDK Operations', () => {
         expect(result.value.results.length).toBeGreaterThanOrEqual(1);
         expect(result.value.total).toBeGreaterThanOrEqual(1);
 
-        const found = result.value.results.find(
-          (r) => r.name === 'my-skill',
-        );
+        const found = result.value.results.find((r) => r.name === 'my-skill');
         expect(found).toBeDefined();
         expect(found!.installed).toBe(false);
       }
@@ -135,9 +132,7 @@ describe('SDK Operations', () => {
       expect(isOk(result)).toBe(true);
       if (isOk(result)) {
         expect(result.value.results.length).toBeGreaterThanOrEqual(1);
-        const found = result.value.results.find(
-          (r) => r.name === 'installed-skill',
-        );
+        const found = result.value.results.find((r) => r.name === 'installed-skill');
         expect(found).toBeDefined();
         // The installName ('installed-skill') differs from the lock key
         // ('Installed Skill'), so the installed flag may be false. This tests
@@ -384,9 +379,7 @@ describe('SDK Operations', () => {
         expect(result.value.available).toBeDefined();
         expect(result.value.available!.length).toBe(1);
         expect(result.value.available![0]!.name).toBe('Discovered Skill');
-        expect(result.value.available![0]!.description).toBe(
-          'Found by discovery',
-        );
+        expect(result.value.available![0]!.description).toBe('Found by discovery');
       }
     });
 
@@ -406,9 +399,7 @@ describe('SDK Operations', () => {
       expect(isOk(result)).toBe(true);
       if (isOk(result)) {
         expect(result.value.available).toBeDefined();
-        const prompt = result.value.available!.find(
-          (c) => c.name === 'My Prompt',
-        );
+        const prompt = result.value.available!.find((c) => c.name === 'My Prompt');
         expect(prompt).toBeDefined();
         expect(prompt!.cognitiveType).toBe('prompt');
       }

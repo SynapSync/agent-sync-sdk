@@ -4,10 +4,7 @@ import { MintlifyProvider } from './mintlify.js';
 import { HuggingFaceProvider } from './huggingface.js';
 import { DirectURLProvider } from './direct.js';
 
-export function registerDefaultProviders(
-  registry: ProviderRegistry,
-  config: SDKConfig,
-): void {
+export function registerDefaultProviders(registry: ProviderRegistry, config: SDKConfig): void {
   // Custom providers first (user-specified take priority)
   for (const custom of config.providers.custom) {
     registry.register(custom);

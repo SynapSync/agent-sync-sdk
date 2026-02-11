@@ -11,7 +11,6 @@ describe('Integration: add flow', () => {
       cwd: '/project',
       homeDir: '/home/user',
       fs,
-      telemetry: { enabled: false },
     });
     return { sdk, fs };
   }
@@ -38,9 +37,7 @@ describe('Integration: add flow', () => {
       expect(result.value.available!.length).toBeGreaterThanOrEqual(1);
       expect(result.value.installed.length).toBe(0);
 
-      const found = result.value.available!.find(
-        (c) => c.name === 'React 19',
-      );
+      const found = result.value.available!.find((c) => c.name === 'React 19');
       expect(found).toBeDefined();
       expect(found!.cognitiveType).toBe('skill');
     }
@@ -98,9 +95,7 @@ describe('Integration: add flow', () => {
     });
 
     // Canonical path: /project/.agents/cognit/skills/general/react-19/
-    const canonicalExists = await fs.exists(
-      '/project/.agents/cognit/skills/general/react-19',
-    );
+    const canonicalExists = await fs.exists('/project/.agents/cognit/skills/general/react-19');
     expect(canonicalExists).toBe(true);
   });
 
@@ -123,16 +118,11 @@ describe('Integration: add flow', () => {
     });
 
     // Lock file should exist at /project/.agents/cognit/.cognit-lock.json
-    const lockExists = await fs.exists(
-      '/project/.agents/cognit/.cognit-lock.json',
-    );
+    const lockExists = await fs.exists('/project/.agents/cognit/.cognit-lock.json');
     expect(lockExists).toBe(true);
 
     // Read and parse lock to verify entry
-    const lockContent = await fs.readFile(
-      '/project/.agents/cognit/.cognit-lock.json',
-      'utf-8',
-    );
+    const lockContent = await fs.readFile('/project/.agents/cognit/.cognit-lock.json', 'utf-8');
     const lock = JSON.parse(lockContent) as {
       cognitives: Record<string, { cognitiveType: string; contentHash: string }>;
     };
@@ -169,9 +159,7 @@ describe('Integration: add flow', () => {
     });
 
     const startEvents = events.filter((e) => e.event === 'operation:start');
-    const completeEvents = events.filter(
-      (e) => e.event === 'operation:complete',
-    );
+    const completeEvents = events.filter((e) => e.event === 'operation:complete');
 
     expect(startEvents.length).toBeGreaterThanOrEqual(1);
     expect(completeEvents.length).toBeGreaterThanOrEqual(1);

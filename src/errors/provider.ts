@@ -37,7 +37,10 @@ export class ProviderMatchError extends ProviderError {
 export class NoCognitivesFoundError extends ProviderError {
   override readonly code = 'NO_COGNITIVES_FOUND';
 
-  constructor(readonly source: string, providerId: string) {
+  constructor(
+    readonly source: string,
+    providerId: string,
+  ) {
     super(`No cognitives found at: ${source}`, providerId);
   }
 }

@@ -11,7 +11,8 @@ describe('withRetry', () => {
   });
 
   it('retries on failure and succeeds', async () => {
-    const fn = vi.fn()
+    const fn = vi
+      .fn()
       .mockRejectedValueOnce(new Error('fail1'))
       .mockRejectedValueOnce(new Error('fail2'))
       .mockResolvedValue('ok');
@@ -27,9 +28,9 @@ describe('withRetry', () => {
   it('throws last error after all retries exhausted', async () => {
     const fn = vi.fn().mockRejectedValue(new Error('persistent'));
 
-    await expect(
-      withRetry(fn, { maxRetries: 2, baseDelayMs: 1, maxDelayMs: 1 }),
-    ).rejects.toThrow('persistent');
+    await expect(withRetry(fn, { maxRetries: 2, baseDelayMs: 1, maxDelayMs: 1 })).rejects.toThrow(
+      'persistent',
+    );
     expect(fn).toHaveBeenCalledTimes(3); // initial + 2 retries
   });
 
@@ -54,7 +55,8 @@ describe('withRetry', () => {
       return origSetTimeout(fn, 0); // execute immediately
     });
 
-    const fnMock = vi.fn()
+    const fnMock = vi
+      .fn()
       .mockRejectedValueOnce(new Error('1'))
       .mockRejectedValueOnce(new Error('2'))
       .mockResolvedValue('ok');
@@ -75,7 +77,8 @@ describe('withRetry', () => {
       return origSetTimeout(fn, 0);
     });
 
-    const fnMock = vi.fn()
+    const fnMock = vi
+      .fn()
       .mockRejectedValueOnce(new Error('1'))
       .mockRejectedValueOnce(new Error('2'))
       .mockResolvedValue('ok');

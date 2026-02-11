@@ -1,16 +1,10 @@
 import type { CognitError } from '../errors/base.js';
-import type {
-  ListOptions,
-  ListResult,
-  ListedCognitive,
-} from '../types/operations.js';
+import type { ListOptions, ListResult, ListedCognitive } from '../types/operations.js';
 import type { Result } from '../types/result.js';
 import { BaseOperation } from './base.js';
 
 export class ListOperation extends BaseOperation {
-  async execute(
-    options?: Partial<ListOptions>,
-  ): Promise<Result<ListResult, CognitError>> {
+  async execute(options?: Partial<ListOptions>): Promise<Result<ListResult, CognitError>> {
     return this.executeWithLifecycle('list', options, () => this.run(options));
   }
 
@@ -41,9 +35,7 @@ export class ListOperation extends BaseOperation {
 
     const count = cognitives.length;
     const message =
-      count > 0
-        ? `Found ${count} installed cognitive(s).`
-        : 'No cognitives installed.';
+      count > 0 ? `Found ${count} installed cognitive(s).` : 'No cognitives installed.';
 
     return { success: true, cognitives, count, message };
   }

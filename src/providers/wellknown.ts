@@ -38,7 +38,10 @@ export class WellKnownProvider implements HostProvider {
     }
   }
 
-  async fetchCognitive(source: string, _options?: ProviderFetchOptions): Promise<RemoteCognitive | null> {
+  async fetchCognitive(
+    source: string,
+    _options?: ProviderFetchOptions,
+  ): Promise<RemoteCognitive | null> {
     const all = await this.fetchAll(source);
     return all[0] ?? null;
   }
@@ -81,10 +84,11 @@ export class WellKnownProvider implements HostProvider {
   private async fetchIndex(indexUrl: string): Promise<WellKnownIndex | null> {
     try {
       const response = await withRetry(
-        () => fetch(indexUrl, {
-          signal: AbortSignal.timeout(this.fetchTimeoutMs),
-          headers: { 'User-Agent': 'agent-sync-sdk' },
-        }),
+        () =>
+          fetch(indexUrl, {
+            signal: AbortSignal.timeout(this.fetchTimeoutMs),
+            headers: { 'User-Agent': 'agent-sync-sdk' },
+          }),
         { shouldRetry: (err) => isRetryableNetworkError(err) },
       );
       if (!response.ok) return null;

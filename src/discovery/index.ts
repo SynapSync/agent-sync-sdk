@@ -19,7 +19,11 @@ export interface DiscoverOptions {
 
 export interface DiscoveryService {
   discover(basePath: string, options?: DiscoverOptions): Promise<Cognitive[]>;
-  discoverByType(basePath: string, type: CognitiveType, options?: DiscoverOptions): Promise<Cognitive[]>;
+  discoverByType(
+    basePath: string,
+    type: CognitiveType,
+    options?: DiscoverOptions,
+  ): Promise<Cognitive[]>;
 }
 
 export class DiscoveryServiceImpl implements DiscoveryService {
@@ -57,7 +61,12 @@ export class DiscoveryServiceImpl implements DiscoveryService {
         if (validationResult.ok) {
           cognitives.push(validationResult.value);
           this.eventBus.emit('discovery:found', {
-            cognitive: { name: cognitive.name, type: cognitive.type, path: cognitive.path, description: cognitive.description },
+            cognitive: {
+              name: cognitive.name,
+              type: cognitive.type,
+              path: cognitive.path,
+              description: cognitive.description,
+            },
             type: cognitive.type,
           });
         }
@@ -73,11 +82,18 @@ export class DiscoveryServiceImpl implements DiscoveryService {
     };
     const filtered = this.filter.filter(cognitives, criteria);
 
-    this.eventBus.emit('discovery:complete', { count: filtered.length, durationMs: Date.now() - start });
+    this.eventBus.emit('discovery:complete', {
+      count: filtered.length,
+      durationMs: Date.now() - start,
+    });
     return filtered;
   }
 
-  async discoverByType(basePath: string, type: CognitiveType, options?: DiscoverOptions): Promise<Cognitive[]> {
+  async discoverByType(
+    basePath: string,
+    type: CognitiveType,
+    options?: DiscoverOptions,
+  ): Promise<Cognitive[]> {
     return this.discover(basePath, { ...options, types: [type] });
   }
 }

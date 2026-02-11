@@ -9,7 +9,10 @@ function createMockProvider(id: string, matchFn: (s: string) => boolean): HostPr
     id,
     displayName: id,
     match: (source: string): ProviderMatch => ({ matches: matchFn(source) }),
-    fetchCognitive: async (_s: string, _o?: ProviderFetchOptions): Promise<RemoteCognitive | null> => null,
+    fetchCognitive: async (
+      _s: string,
+      _o?: ProviderFetchOptions,
+    ): Promise<RemoteCognitive | null> => null,
     fetchAll: async (_s: string, _o?: ProviderFetchOptions): Promise<RemoteCognitive[]> => [],
     toRawUrl: (url: string) => url,
     getSourceIdentifier: (s: string) => s,
@@ -30,7 +33,9 @@ describe('ProviderRegistryImpl', () => {
     const eventBus = createCapturingEventBus();
     const registry = new ProviderRegistryImpl(eventBus);
     registry.register(createMockProvider('test', () => true));
-    expect(() => registry.register(createMockProvider('test', () => true))).toThrow('already registered');
+    expect(() => registry.register(createMockProvider('test', () => true))).toThrow(
+      'already registered',
+    );
   });
 
   it('findProvider returns first matching provider', () => {
@@ -67,6 +72,6 @@ describe('ProviderRegistryImpl', () => {
     registry.register(createMockProvider('c', () => false));
     const all = registry.getAll();
     expect(all).toHaveLength(3);
-    expect(all.map(p => p.id)).toEqual(['a', 'b', 'c']);
+    expect(all.map((p) => p.id)).toEqual(['a', 'b', 'c']);
   });
 });

@@ -1,11 +1,7 @@
 import type { CognitError } from '../errors/base.js';
 import type { RemoteCognitive } from '../types/cognitive.js';
 import type { ProviderFetchOptions, SourceDescriptor } from '../types/source.js';
-import type {
-  FindOptions,
-  FindResult,
-  DiscoveredCognitive,
-} from '../types/operations.js';
+import type { FindOptions, FindResult, DiscoveredCognitive } from '../types/operations.js';
 import type { Result } from '../types/result.js';
 import { BaseOperation } from './base.js';
 
@@ -17,10 +13,7 @@ export class FindOperation extends BaseOperation {
     return this.executeWithLifecycle('find', options, () => this.run(source, options));
   }
 
-  private async run(
-    source: string,
-    options?: Partial<FindOptions>,
-  ): Promise<FindResult> {
+  private async run(source: string, options?: Partial<FindOptions>): Promise<FindResult> {
     // 1. Parse source and find provider
     const parsed = this.ctx.sourceParser.parse(source);
     const remoteCognitives = await this.fetchRemote(source, parsed, options);
@@ -51,9 +44,7 @@ export class FindOperation extends BaseOperation {
     }
 
     const message =
-      total > 0
-        ? `Found ${total} cognitive(s) at ${source}.`
-        : `No cognitives found at ${source}.`;
+      total > 0 ? `Found ${total} cognitive(s) at ${source}.` : `No cognitives found at ${source}.`;
 
     return {
       success: total > 0,

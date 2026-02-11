@@ -58,7 +58,11 @@ describe('GitClientImpl', () => {
 
       const completeEvents = eventBus.events.filter((e) => e.event === 'git:clone:complete');
       expect(completeEvents).toHaveLength(1);
-      const payload = completeEvents[0]!.payload as { url: string; path: string; durationMs: number };
+      const payload = completeEvents[0]!.payload as {
+        url: string;
+        path: string;
+        durationMs: number;
+      };
       expect(payload.url).toBe('https://github.com/owner/repo.git');
       expect(payload.path).toBe('/tmp/cognit-abc123');
       expect(typeof payload.durationMs).toBe('number');
@@ -67,9 +71,9 @@ describe('GitClientImpl', () => {
     it('on failure emits git:clone:error and throws GitCloneError', async () => {
       mockClone.mockRejectedValueOnce(new Error('network timeout'));
 
-      await expect(
-        gitClient.clone('https://github.com/owner/repo.git'),
-      ).rejects.toThrow(GitCloneError);
+      await expect(gitClient.clone('https://github.com/owner/repo.git')).rejects.toThrow(
+        GitCloneError,
+      );
 
       const errorEvents = eventBus.events.filter((e) => e.event === 'git:clone:error');
       expect(errorEvents).toHaveLength(1);

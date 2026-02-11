@@ -24,7 +24,9 @@ export class EventBusImpl implements EventBus {
     const set = this.handlers.get(key)!;
     const wrapped = handler as Handler;
     set.add(wrapped);
-    return () => { set.delete(wrapped); };
+    return () => {
+      set.delete(wrapped);
+    };
   }
 
   once<K extends keyof SDKEventMap>(

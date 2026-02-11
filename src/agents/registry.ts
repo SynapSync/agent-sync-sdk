@@ -1,6 +1,11 @@
-import { homedir } from 'node:os';
 import { join } from 'node:path';
-import type { AgentType, AgentConfig, AgentDirConfig, AgentRegistry, AgentDetectionResult } from '../types/agent.js';
+import type {
+  AgentType,
+  AgentConfig,
+  AgentDirConfig,
+  AgentRegistry,
+  AgentDetectionResult,
+} from '../types/agent.js';
 import type { CognitiveType } from '../types/cognitive.js';
 import { AGENTS_DIR } from '../types/cognitive.js';
 import type { SDKConfig } from '../types/config.js';
@@ -39,10 +44,7 @@ function buildDetectFn(
   };
 }
 
-function buildAgentConfig(
-  gen: GeneratedAgentConfig,
-  config: SDKConfig,
-): AgentConfig {
+function buildAgentConfig(gen: GeneratedAgentConfig, config: SDKConfig): AgentConfig {
   const dirs: Record<CognitiveType, AgentDirConfig> = {
     skill: {
       local: join(config.cwd, gen.dirs['skill']!.local),

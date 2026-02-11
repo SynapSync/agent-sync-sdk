@@ -61,20 +61,23 @@ describe('DirectURLProvider', () => {
 
   describe('fetchCognitive', () => {
     it('throws ProviderNotImplementedError', async () => {
-      await expect(provider.fetchCognitive('https://example.com/SKILL.md'))
-        .rejects.toThrow(ProviderNotImplementedError);
+      await expect(provider.fetchCognitive('https://example.com/SKILL.md')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
 
     it('includes provider id in error', async () => {
-      await expect(provider.fetchCognitive('https://example.com/SKILL.md'))
-        .rejects.toThrow('direct-url');
+      await expect(provider.fetchCognitive('https://example.com/SKILL.md')).rejects.toThrow(
+        'direct-url',
+      );
     });
   });
 
   describe('fetchAll', () => {
     it('throws ProviderNotImplementedError', async () => {
-      await expect(provider.fetchAll('https://example.com/SKILL.md'))
-        .rejects.toThrow(ProviderNotImplementedError);
+      await expect(provider.fetchAll('https://example.com/SKILL.md')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
   });
 

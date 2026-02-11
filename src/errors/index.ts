@@ -2,16 +2,40 @@
 export { CognitError } from './base.js';
 
 // Config
-export { ConfigError, ConfigNotFoundError, InvalidConfigError, ConfigValidationError } from './config.js';
+export {
+  ConfigError,
+  ConfigNotFoundError,
+  InvalidConfigError,
+  ConfigValidationError,
+} from './config.js';
 
 // Provider
-export { ProviderError, ProviderFetchError, ProviderMatchError, NoCognitivesFoundError, ProviderNotImplementedError } from './provider.js';
+export {
+  ProviderError,
+  ProviderFetchError,
+  ProviderMatchError,
+  NoCognitivesFoundError,
+  ProviderNotImplementedError,
+} from './provider.js';
 
 // Install
-export { InstallError, PathTraversalError, SymlinkError, FileWriteError, EloopError } from './install.js';
+export {
+  InstallError,
+  PathTraversalError,
+  SymlinkError,
+  FileWriteError,
+  EloopError,
+} from './install.js';
 
 // Lock
-export { LockError, LockReadError, LockCorruptedError, LockWriteError, LockMigrationError, MigrationError } from './lock.js';
+export {
+  LockError,
+  LockReadError,
+  LockCorruptedError,
+  LockWriteError,
+  LockMigrationError,
+  MigrationError,
+} from './lock.js';
 
 // Discovery
 export { DiscoveryError, ParseError, ScanError, ValidationError } from './discovery.js';
@@ -66,4 +90,4 @@ export const ERROR_CODES = {
   CONFLICT_ERROR: 'CONFLICT_ERROR',
 } as const;
 
-export type ErrorCode = typeof ERROR_CODES[keyof typeof ERROR_CODES];
+export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];

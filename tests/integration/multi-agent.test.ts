@@ -10,7 +10,6 @@ describe('Integration: multi-agent install', () => {
       cwd: '/project',
       homeDir: '/home/user',
       fs,
-      telemetry: { enabled: false },
     });
     return { sdk, fs };
   }
@@ -67,9 +66,7 @@ describe('Integration: multi-agent install', () => {
     });
 
     // Canonical path should exist
-    const canonicalExists = await fs.exists(
-      '/project/.agents/cognit/skills/general/shared-skill',
-    );
+    const canonicalExists = await fs.exists('/project/.agents/cognit/skills/general/shared-skill');
     expect(canonicalExists).toBe(true);
   });
 
@@ -92,9 +89,7 @@ describe('Integration: multi-agent install', () => {
 
     // claude-code is non-universal (localRoot: '.claude'), so it should have
     // its own skill directory: /project/.claude/skills/agent-dirs-skill/
-    const claudeSkillExists = await fs.exists(
-      '/project/.claude/skills/agent-dirs-skill',
-    );
+    const claudeSkillExists = await fs.exists('/project/.claude/skills/agent-dirs-skill');
     expect(claudeSkillExists).toBe(true);
   });
 
@@ -189,10 +184,7 @@ describe('Integration: multi-agent install', () => {
       agents: ['claude-code', 'cursor'] as const,
     });
 
-    const lockContent = await fs.readFile(
-      '/project/.agents/cognit/.cognit-lock.json',
-      'utf-8',
-    );
+    const lockContent = await fs.readFile('/project/.agents/cognit/.cognit-lock.json', 'utf-8');
     const lock = JSON.parse(lockContent) as {
       cognitives: Record<string, { cognitiveType: string }>;
     };
