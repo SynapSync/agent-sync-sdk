@@ -13,6 +13,7 @@ import {
   DEFAULT_CLONE_TIMEOUT_MS,
   DEFAULT_CLONE_DEPTH,
   DEFAULT_TELEMETRY_ENABLED,
+  DEFAULT_FETCH_TIMEOUT_MS,
 } from './defaults.js';
 
 function detectGitHubToken(): string | undefined {
@@ -49,6 +50,7 @@ export function resolveConfig(
     providers,
     agents,
     telemetry,
+    fetchTimeoutMs: partial?.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS,
   };
 
   validateConfig(config);

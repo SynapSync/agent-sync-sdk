@@ -8,7 +8,7 @@ export { ok, err, unwrap, mapResult, isOk, isErr } from './result.js';
 
 // Cognitive
 export type { CognitiveType, CognitiveTypeConfig, Cognitive, Skill, Prompt, Rule, AgentCognitive, RemoteCognitive, CognitiveRef } from './cognitive.js';
-export { COGNITIVE_TYPE_CONFIGS, COGNITIVE_SUBDIRS, COGNITIVE_FILE_NAMES, AGENTS_DIR } from './cognitive.js';
+export { COGNITIVE_TYPE_CONFIGS, COGNITIVE_SUBDIRS, COGNITIVE_FILE_NAMES, AGENTS_DIR, isCognitiveType } from './cognitive.js';
 
 // Agent
 export type { AgentType, AgentDirConfig, AgentConfig, AgentDetectionResult, AgentRegistry } from './agent.js';

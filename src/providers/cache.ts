@@ -78,6 +78,7 @@ export class FetchCache {
     private readonly fs: FileSystemAdapter,
     homeDir: string,
     private readonly defaultTtlMs: number = 900_000,
+    private readonly fetchTimeoutMs: number = 15_000,
   ) {
     this.cacheDir = join(homeDir, '.cache', 'cognit', 'fetch');
   }
@@ -98,7 +99,10 @@ export class FetchCache {
       // Cache miss
     }
 
-    const response = await fetch(url, { headers: { 'User-Agent': 'agent-sync-sdk' } });
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(this.fetchTimeoutMs),
+      headers: { 'User-Agent': 'agent-sync-sdk' },
+    });
     if (!response.ok) throw new Error(`Fetch failed: ${url} (${response.status})`);
     const content = await response.text();
 

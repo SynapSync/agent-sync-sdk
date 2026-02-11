@@ -4,6 +4,7 @@ import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import type { EventBus } from '../types/events.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
 import { ProviderFetchError, NoCognitivesFoundError } from '../errors/provider.js';
+import { isCognitiveType } from '../types/cognitive.js';
 
 interface DiscoveryLike {
   discover(basePath: string, options?: { subpath?: string }): Promise<ReadonlyArray<{
@@ -28,6 +29,7 @@ export class GitHubProvider implements HostProvider {
     private readonly gitClient: GitClient,
     private readonly discovery: DiscoveryLike,
     private readonly eventBus: EventBus,
+    private readonly fetchTimeoutMs: number = 15_000,
   ) {}
 
   match(source: string): ProviderMatch {
@@ -52,8 +54,9 @@ export class GitHubProvider implements HostProvider {
     this.eventBus.emit('provider:fetch:start', { providerId: this.id, url: rawUrl });
 
     try {
+      const signal = options?.signal ?? AbortSignal.timeout(this.fetchTimeoutMs);
       const response = await fetch(rawUrl, {
-        ...(options?.signal != null && { signal: options.signal }),
+        signal,
         headers: { 'User-Agent': 'agent-sync-sdk' },
       });
       if (!response.ok) {
@@ -77,7 +80,7 @@ export class GitHubProvider implements HostProvider {
         sourceUrl: source,
         providerId: this.id,
         sourceIdentifier: sourceIdentifier(ownerRepo),
-        type: (data['type'] as CognitiveType) ?? 'skill',
+        type: isCognitiveType(data['type']) ? data['type'] : 'skill',
         metadata: Object.freeze({ ...data }),
       };
     } catch (cause) {

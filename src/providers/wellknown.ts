@@ -1,6 +1,7 @@
 import type { HostProvider, ProviderMatch, ProviderFetchOptions } from '../types/source.js';
 import type { RemoteCognitive, CognitiveType } from '../types/cognitive.js';
 import { sourceIdentifier, safeName } from '../types/brands.js';
+import { isCognitiveType } from '../types/cognitive.js';
 
 const KNOWN_GIT_HOSTS = new Set(['github.com', 'gitlab.com', 'bitbucket.org', 'huggingface.co']);
 
@@ -16,6 +17,8 @@ interface WellKnownIndex {
 export class WellKnownProvider implements HostProvider {
   readonly id = 'wellknown';
   readonly displayName = 'Well-Known Endpoint';
+
+  constructor(private readonly fetchTimeoutMs: number = 15_000) {}
 
   match(source: string): ProviderMatch {
     try {
@@ -76,7 +79,10 @@ export class WellKnownProvider implements HostProvider {
 
   private async fetchIndex(indexUrl: string): Promise<WellKnownIndex | null> {
     try {
-      const response = await fetch(indexUrl);
+      const response = await fetch(indexUrl, {
+        signal: AbortSignal.timeout(this.fetchTimeoutMs),
+        headers: { 'User-Agent': 'agent-sync-sdk' },
+      });
       if (!response.ok) return null;
       const data: unknown = await response.json();
       if (!this.isValidIndex(data)) return null;
@@ -96,7 +102,12 @@ export class WellKnownProvider implements HostProvider {
     const results: RemoteCognitive[] = [];
 
     for (const entry of index.cognitives) {
-      if (typeof entry.name !== 'string' || typeof entry.url !== 'string') continue;
+      // Validate required fields
+      if (typeof entry !== 'object' || entry == null) continue;
+      if (typeof entry.name !== 'string' || entry.name.length === 0) continue;
+      if (typeof entry.url !== 'string' || entry.url.length === 0) continue;
+      const description = typeof entry.description === 'string' ? entry.description : '';
+      const type: CognitiveType = isCognitiveType(entry.type) ? entry.type : 'skill';
 
       const entryUrl = entry.url.startsWith('http')
         ? entry.url
@@ -104,13 +115,13 @@ export class WellKnownProvider implements HostProvider {
 
       results.push({
         name: entry.name,
-        description: entry.description ?? '',
+        description,
         content: '', // Content would be fetched separately
         installName: safeName(entry.name.toLowerCase().replace(/\s+/g, '-')),
         sourceUrl: entryUrl,
         providerId: this.id,
         sourceIdentifier: sourceIdentifier(`wellknown/${new URL(origin).hostname}`),
-        type: entry.type ?? 'skill',
+        type,
         metadata: Object.freeze({}),
       });
     }
