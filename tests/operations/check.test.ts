@@ -288,7 +288,7 @@ describe('CheckOperation', () => {
 
     expect(isErr(result)).toBe(true);
     if (!isErr(result)) return;
-    expect(result.error.message).toBe('Check operation failed');
+    expect(result.error.message).toBe('Lock file corrupted');
   });
 
   it('reports all healthy message when no issues', async () => {

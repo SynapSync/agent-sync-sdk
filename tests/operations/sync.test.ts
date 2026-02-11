@@ -299,7 +299,7 @@ describe('SyncOperation', () => {
 
     expect(isErr(result)).toBe(true);
     if (!isErr(result)) return;
-    expect(result.error.message).toBe('Sync operation failed');
+    expect(result.error.message).toBe('Storage unavailable');
   });
 
   it('handles multiple entries with mixed status', async () => {

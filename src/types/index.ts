@@ -24,8 +24,8 @@ export { LOCK_VERSION } from './lock.js';
 export type { SourceDescriptor, ParsedSource, ProviderMatch, HostProvider, ProviderFetchOptions, ProviderRegistry, SourceParser, GitClient, GitCloneOptions } from './source.js';
 
 // Events
-export type { SDKEventMap, Unsubscribe, EventBus } from './events.js';
+export type { SDKEventMap, OperationName, Unsubscribe, EventBus } from './events.js';
 
 // Config
-export type { FileSystemAdapter, FsStats, Dirent, SDKConfig, GitConfig, ProviderConfig, AgentRegistryConfig, TelemetryConfig, Category, CategoryMapping } from './config.js';
+export type { FileSystemAdapter, FsStats, Dirent, SDKConfig, GitConfig, ProviderConfig, AgentRegistryConfig, TelemetryConfig, EnvReader, Category, CategoryMapping } from './config.js';
 export { DEFAULT_CATEGORIES } from './config.js';

@@ -392,7 +392,7 @@ describe('UpdateOperation', () => {
 
     expect(isErr(result)).toBe(true);
     if (!isErr(result)) return;
-    expect(result.error.message).toBe('Update operation failed');
+    expect(result.error.message).toBe('DB connection failed');
   });
 
   it('returns success=false when there are errors and success=true when none', async () => {

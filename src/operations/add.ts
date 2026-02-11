@@ -13,44 +13,16 @@ import type {
 } from '../types/operations.js';
 import type { Result } from '../types/result.js';
 import type { AgentType } from '../types/agent.js';
-import type { OperationContext } from './context.js';
-import { ok, err } from '../types/result.js';
-import { OperationError } from '../errors/operation.js';
 import { NoCognitivesFoundError } from '../errors/provider.js';
 import { computeContentHash } from '../lock/integrity.js';
+import { BaseOperation } from './base.js';
 
-export class AddOperation {
-  constructor(private readonly ctx: OperationContext) {}
-
+export class AddOperation extends BaseOperation {
   async execute(
     source: string,
     options?: Partial<AddOptions>,
   ): Promise<Result<AddResult, CognitError>> {
-    const start = Date.now();
-    this.ctx.eventBus.emit('operation:start', { operation: 'add', options });
-
-    try {
-      const result = await this.run(source, options);
-      this.ctx.eventBus.emit('operation:complete', {
-        operation: 'add',
-        result,
-        durationMs: Date.now() - start,
-      });
-      return ok(result);
-    } catch (error) {
-      const opError =
-        error instanceof OperationError
-          ? error
-          : new OperationError(
-              error instanceof Error ? error.message : String(error),
-              ...(error instanceof Error ? [{ cause: error }] : []),
-            );
-      this.ctx.eventBus.emit('operation:error', {
-        operation: 'add',
-        error: opError,
-      });
-      return err(opError);
-    }
+    return this.executeWithLifecycle('add', options, () => this.run(source, options));
   }
 
   private async run(

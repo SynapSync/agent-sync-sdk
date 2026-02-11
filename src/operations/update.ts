@@ -8,100 +8,76 @@ import type {
   UpdateInfo,
   UpdateError,
 } from '../types/operations.js';
-import type { OperationContext } from './context.js';
-import { ok, err } from '../types/result.js';
 import { OperationError } from '../errors/operation.js';
 import { computeContentHash } from '../lock/integrity.js';
+import { BaseOperation } from './base.js';
 
-export class UpdateOperation {
-  constructor(private readonly ctx: OperationContext) {}
-
+export class UpdateOperation extends BaseOperation {
   async execute(
     options?: Partial<UpdateOptions>,
   ): Promise<Result<UpdateResult, CognitError>> {
-    const startTime = Date.now();
-    const opName = 'update';
+    return this.executeWithLifecycle('update', options, () => this.run(options));
+  }
 
-    this.ctx.eventBus.emit('operation:start', {
-      operation: opName,
-      options: options as unknown,
-    });
+  private async run(options?: Partial<UpdateOptions>): Promise<UpdateResult> {
+    const allEntries = await this.ctx.lockManager.getAllEntries();
+    const entryNames = Object.keys(allEntries);
 
-    try {
-      const allEntries = await this.ctx.lockManager.getAllEntries();
-      const entryNames = Object.keys(allEntries);
+    const targetNames =
+      options?.names != null && options.names.length > 0
+        ? entryNames.filter((n) => options.names!.includes(n))
+        : entryNames;
 
-      const targetNames =
-        options?.names != null && options.names.length > 0
-          ? entryNames.filter((n) => options.names!.includes(n))
-          : entryNames;
+    const updates: UpdateInfo[] = [];
+    const upToDate: string[] = [];
+    const errors: UpdateError[] = [];
 
-      const updates: UpdateInfo[] = [];
-      const upToDate: string[] = [];
-      const errors: UpdateError[] = [];
+    for (const name of targetNames) {
+      const entry = allEntries[name];
+      if (entry == null) continue;
 
-      for (const name of targetNames) {
-        const entry = allEntries[name];
-        if (entry == null) continue;
-
-        try {
-          const remotes = await this.fetchRemote(entry);
-          if (remotes.length === 0) {
-            errors.push({ name, error: `No remote content found for "${name}"` });
-            continue;
-          }
-
-          const remote = remotes[0]!;
-          const newHash = computeContentHash(remote.content);
-
-          if (newHash === entry.contentHash) {
-            upToDate.push(name);
-            continue;
-          }
-
-          const applied =
-            options?.checkOnly !== true && options?.confirmed === true;
-
-          if (applied) {
-            await this.applyUpdate(name, entry, remote);
-          }
-
-          updates.push({
-            name,
-            currentHash: entry.contentHash,
-            newHash,
-            applied,
-          });
-        } catch (cause) {
-          const message =
-            cause instanceof Error ? cause.message : String(cause);
-          errors.push({ name, error: message });
+      try {
+        const remotes = await this.fetchRemote(entry);
+        if (remotes.length === 0) {
+          errors.push({ name, error: `No remote content found for "${name}"` });
+          continue;
         }
+
+        const remote = remotes[0]!;
+        const newHash = computeContentHash(remote.content);
+
+        if (newHash === entry.contentHash) {
+          upToDate.push(name);
+          continue;
+        }
+
+        const applied =
+          options?.checkOnly !== true && options?.confirmed === true;
+
+        if (applied) {
+          await this.applyUpdate(name, entry, remote);
+        }
+
+        updates.push({
+          name,
+          currentHash: entry.contentHash,
+          newHash,
+          applied,
+        });
+      } catch (cause) {
+        const message =
+          cause instanceof Error ? cause.message : String(cause);
+        errors.push({ name, error: message });
       }
-
-      const result: UpdateResult = {
-        success: errors.length === 0,
-        updates,
-        upToDate,
-        errors,
-        message: this.buildMessage(updates, upToDate, errors, options),
-      };
-
-      this.ctx.eventBus.emit('operation:complete', {
-        operation: opName,
-        result: result as unknown,
-        durationMs: Date.now() - startTime,
-      });
-
-      return ok(result);
-    } catch (cause) {
-      const error = new OperationError('Update operation failed', { cause });
-      this.ctx.eventBus.emit('operation:error', {
-        operation: opName,
-        error,
-      });
-      return err(error);
     }
+
+    return {
+      success: errors.length === 0,
+      updates,
+      upToDate,
+      errors,
+      message: this.buildMessage(updates, upToDate, errors, options),
+    };
   }
 
   private async fetchRemote(entry: LockEntry): Promise<RemoteCognitive[]> {

@@ -29,7 +29,7 @@ function buildDetectFn(
         if (await config.fs.exists(dir)) return true;
       }
       if (rule.envVar) {
-        if (process.env[rule.envVar]) return true;
+        if (config.env(rule.envVar)) return true;
       }
       if (rule.absolutePath) {
         if (await config.fs.exists(rule.absolutePath)) return true;
