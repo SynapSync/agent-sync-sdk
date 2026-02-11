@@ -82,6 +82,28 @@ describe('createAgentSyncSDK', () => {
     await expect(sdk.dispose()).resolves.toBeUndefined();
   });
 
+  it('sdk.dispose() clears event handlers', async () => {
+    const fs = createMemoryFs();
+    const sdk = createAgentSyncSDK({ cwd: '/project', homeDir: '/home/user', fs, telemetry: { enabled: false } });
+
+    let called = false;
+    sdk.on('operation:start', () => { called = true; });
+
+    await sdk.dispose();
+
+    // Emit after dispose — handler should NOT fire
+    sdk.events.emit('operation:start', { operation: 'test', options: {} });
+    expect(called).toBe(false);
+  });
+
+  it('sdk.dispose() is idempotent', async () => {
+    const fs = createMemoryFs();
+    const sdk = createAgentSyncSDK({ cwd: '/project', homeDir: '/home/user', fs, telemetry: { enabled: false } });
+
+    await sdk.dispose();
+    await expect(sdk.dispose()).resolves.toBeUndefined();
+  });
+
   it('registers providers in correct priority order', () => {
     const fs = createMemoryFs();
     const sdk = createAgentSyncSDK({ cwd: '/project', homeDir: '/home/user', fs, telemetry: { enabled: false } });

@@ -43,6 +43,8 @@ export interface SDKConfig {
   readonly providers: Readonly<ProviderConfig>;
   readonly agents: Readonly<AgentRegistryConfig>;
   readonly telemetry: Readonly<TelemetryConfig>;
+  /** Timeout in milliseconds for HTTP fetch calls. Default: 15000 (15s). */
+  readonly fetchTimeoutMs: number;
 }
 
 export interface GitConfig {

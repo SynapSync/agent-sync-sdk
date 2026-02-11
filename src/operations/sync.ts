@@ -37,12 +37,13 @@ export class SyncOperation {
 
         const subdir = COGNITIVE_SUBDIRS[entry.cognitiveType];
         const safeName = sanitizeName(name);
+        const category = entry.category ?? 'general';
         const canonicalPath = join(
           this.ctx.config.cwd,
           '.agents',
           'cognit',
           subdir,
-          'general',
+          category,
           safeName,
         );
 

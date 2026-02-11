@@ -184,6 +184,7 @@ export class AddOperation {
           sourceUrl: getSourceUrl(cognitive, source),
           contentHash: getContentHash(cognitive),
           cognitiveType: cogType,
+          category: options?.category ?? 'general',
         });
       }
     }

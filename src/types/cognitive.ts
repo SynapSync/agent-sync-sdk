@@ -4,6 +4,12 @@ import type { CognitiveName, SafeName, SourceIdentifier } from './brands.js';
 
 export type CognitiveType = 'skill' | 'agent' | 'prompt' | 'rule';
 
+const VALID_COGNITIVE_TYPES = new Set<string>(['skill', 'agent', 'prompt', 'rule']);
+
+export function isCognitiveType(value: unknown): value is CognitiveType {
+  return typeof value === 'string' && VALID_COGNITIVE_TYPES.has(value);
+}
+
 export interface CognitiveTypeConfig {
   readonly subdir: string;
   readonly fileName: string;

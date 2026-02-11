@@ -37,6 +37,11 @@ export class EventBusImpl implements EventBus {
     });
     return unsub;
   }
+
+  /** Remove all registered handlers. */
+  clear(): void {
+    this.handlers.clear();
+  }
 }
 
 /** For tests: captures all emitted events in order */

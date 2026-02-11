@@ -100,6 +100,8 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
   readonly providers: ProviderRegistry;
 
   private readonly ops: OperationMap;
+  private readonly cleanup: () => void;
+  private disposed = false;
 
   constructor(
     config: Readonly<SDKConfig>,
@@ -107,12 +109,14 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
     ops: OperationMap,
     agentRegistry: AgentRegistry,
     providerRegistry: ProviderRegistry,
+    cleanup: () => void,
   ) {
     this.config = config;
     this.events = eventBus;
     this.ops = ops;
     this.agents = agentRegistry;
     this.providers = providerRegistry;
+    this.cleanup = cleanup;
   }
 
   // -- Operations --
@@ -162,7 +166,9 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
   // -- Lifecycle --
 
   async dispose(): Promise<void> {
-    // Future: cancel in-flight operations, cleanup caches
+    if (this.disposed) return;
+    this.disposed = true;
+    this.cleanup();
   }
 }
 
@@ -190,13 +196,13 @@ export function createAgentSyncSDK(userConfig?: Partial<SDKConfig>): AgentSyncSD
   }
 
   // GitHub and Local need constructor dependencies
-  providerRegistry.register(new GitHubProvider(gitClient, discoveryService, eventBus));
+  providerRegistry.register(new GitHubProvider(gitClient, discoveryService, eventBus, config.fetchTimeoutMs));
   providerRegistry.register(new LocalProvider(config.fs, discoveryService, eventBus, config.cwd));
 
-  // Stub providers (no constructor args)
+  // Stub providers (not yet implemented — throw ProviderNotImplementedError on fetch)
   providerRegistry.register(new MintlifyProvider());
   providerRegistry.register(new HuggingFaceProvider());
-  providerRegistry.register(new WellKnownProvider());
+  providerRegistry.register(new WellKnownProvider(config.fetchTimeoutMs));
   providerRegistry.register(new DirectURLProvider());
 
   // Layer 4: Installer & Lock
@@ -229,5 +235,9 @@ export function createAgentSyncSDK(userConfig?: Partial<SDKConfig>): AgentSyncSD
 
   eventBus.emit('sdk:initialized', { configHash: '' });
 
-  return new AgentSyncSDKImpl(config, eventBus, ops, agentRegistry, providerRegistry);
+  const cleanup = () => {
+    eventBus.clear();
+  };
+
+  return new AgentSyncSDKImpl(config, eventBus, ops, agentRegistry, providerRegistry, cleanup);
 }
