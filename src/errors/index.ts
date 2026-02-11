@@ -5,7 +5,7 @@ export { CognitError } from './base.js';
 export { ConfigError, ConfigNotFoundError, InvalidConfigError, ConfigValidationError } from './config.js';
 
 // Provider
-export { ProviderError, ProviderFetchError, ProviderMatchError, NoCognitivesFoundError } from './provider.js';
+export { ProviderError, ProviderFetchError, ProviderMatchError, NoCognitivesFoundError, ProviderNotImplementedError } from './provider.js';
 
 // Install
 export { InstallError, PathTraversalError, SymlinkError, FileWriteError, EloopError } from './install.js';
@@ -30,6 +30,7 @@ export const ERROR_CODES = {
   PROVIDER_FETCH_ERROR: 'PROVIDER_FETCH_ERROR',
   PROVIDER_MATCH_ERROR: 'PROVIDER_MATCH_ERROR',
   NO_COGNITIVES_FOUND: 'NO_COGNITIVES_FOUND',
+  PROVIDER_NOT_IMPLEMENTED: 'PROVIDER_NOT_IMPLEMENTED',
 
   // Installer
   INSTALL_ERROR: 'INSTALL_ERROR',
