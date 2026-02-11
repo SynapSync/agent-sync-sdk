@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.2.0
+
+### Minor Changes
+
+- ## v0.2.0 - SDK Ready for npm
+
+  ### Technical Debt Elimination (Sprints 1-4)
+  - Fixed race condition in LockFileManager with promise-chaining write lock
+  - Replaced stub providers with explicit ProviderNotImplementedError
+  - Synchronized AgentType with auto-generated definitions (39 agents)
+  - Implemented functional dispose() with cleanup callbacks
+  - Added fetch() timeout with AbortSignal
+  - Created BaseOperation abstract class eliminating ~200 lines of boilerplate
+  - Added withRetry() utility with exponential backoff
+  - Injected EnvReader for testable environment access
+  - Resolved all 18 technical debt findings (P0-P4)
+
+  ### npm Publishing Preparation (Sprint 5)
+  - Professional package.json metadata (description, author, repository, keywords)
+  - MIT LICENSE file
+  - Pre-commit hooks with husky + lint-staged
+  - Integration tests for compile-agents script
+  - Changesets for semantic versioning
+  - Release pipeline with GitHub Actions
+
+  ### Stats
+  - 486+ tests passing, 91%+ coverage
+  - 67 public types, 16 error classes, 8 operations
+  - ESM-only, Node 20+, TypeScript strict, zero `any`
+
 All notable changes to the `@synapsync/agent-sync-sdk` project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
