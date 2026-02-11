@@ -7,7 +7,6 @@ import {
   DEFAULT_LOCK_FILE_NAME,
   DEFAULT_CLONE_TIMEOUT_MS,
   DEFAULT_CLONE_DEPTH,
-  DEFAULT_TELEMETRY_ENABLED,
 } from '../../src/config/defaults.js';
 
 function makeFs() {
@@ -24,7 +23,6 @@ describe('resolveConfig()', () => {
     expect(config.cwd).toBe(process.cwd());
     expect(config.git.cloneTimeoutMs).toBe(DEFAULT_CLONE_TIMEOUT_MS);
     expect(config.git.depth).toBe(DEFAULT_CLONE_DEPTH);
-    expect(config.telemetry.enabled).toBe(DEFAULT_TELEMETRY_ENABLED);
     expect(config.providers.custom).toEqual([]);
     expect(config.agents.additional).toEqual([]);
     expect(config.fs).toBe(fs);
@@ -43,7 +41,10 @@ describe('resolveConfig()', () => {
 
   it('nested override: git.depth changes, cloneTimeoutMs stays default', () => {
     const fs = makeFs();
-    const config = resolveConfig({ git: { depth: 5, cloneTimeoutMs: DEFAULT_CLONE_TIMEOUT_MS } }, fs);
+    const config = resolveConfig(
+      { git: { depth: 5, cloneTimeoutMs: DEFAULT_CLONE_TIMEOUT_MS } },
+      fs,
+    );
 
     expect(config.git.depth).toBe(5);
     expect(config.git.cloneTimeoutMs).toBe(DEFAULT_CLONE_TIMEOUT_MS);
@@ -53,16 +54,12 @@ describe('resolveConfig()', () => {
 describe('validateConfig()', () => {
   it('throws InvalidConfigError on empty agentsDir', () => {
     const fs = makeFs();
-    expect(() =>
-      resolveConfig({ agentsDir: '' }, fs),
-    ).toThrow(InvalidConfigError);
+    expect(() => resolveConfig({ agentsDir: '' }, fs)).toThrow(InvalidConfigError);
   });
 
   it('throws InvalidConfigError on non-JSON lockFileName', () => {
     const fs = makeFs();
-    expect(() =>
-      resolveConfig({ lockFileName: 'lock.yaml' }, fs),
-    ).toThrow(InvalidConfigError);
+    expect(() => resolveConfig({ lockFileName: 'lock.yaml' }, fs)).toThrow(InvalidConfigError);
   });
 
   it('throws InvalidConfigError on negative cloneTimeoutMs', () => {
@@ -83,7 +80,6 @@ describe('validateConfig()', () => {
       git: { cloneTimeoutMs: 30_000, depth: 1 },
       providers: { custom: [] as const },
       agents: { additional: [] as const },
-      telemetry: { enabled: true },
     };
     expect(() => validateConfig(badConfig)).toThrow(InvalidConfigError);
   });

@@ -1,6 +1,7 @@
 import type { HostProvider, ProviderMatch, ProviderFetchOptions } from '../types/source.js';
 import type { RemoteCognitive } from '../types/cognitive.js';
 import { sourceIdentifier } from '../types/brands.js';
+import { ProviderNotImplementedError } from '../errors/provider.js';
 
 export class HuggingFaceProvider implements HostProvider {
   readonly id = 'huggingface';
@@ -18,12 +19,15 @@ export class HuggingFaceProvider implements HostProvider {
     return { matches: false };
   }
 
-  async fetchCognitive(_source: string, _options?: ProviderFetchOptions): Promise<RemoteCognitive | null> {
-    return null; // Stub
+  async fetchCognitive(
+    _source: string,
+    _options?: ProviderFetchOptions,
+  ): Promise<RemoteCognitive | null> {
+    throw new ProviderNotImplementedError(this.id);
   }
 
   async fetchAll(_source: string, _options?: ProviderFetchOptions): Promise<RemoteCognitive[]> {
-    return []; // Stub
+    throw new ProviderNotImplementedError(this.id);
   }
 
   toRawUrl(url: string): string {

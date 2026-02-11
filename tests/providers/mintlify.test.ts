@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { MintlifyProvider } from '../../src/providers/mintlify.js';
+import { ProviderNotImplementedError } from '../../src/errors/provider.js';
 
 describe('MintlifyProvider', () => {
   const provider = new MintlifyProvider();
@@ -38,16 +39,24 @@ describe('MintlifyProvider', () => {
   });
 
   describe('fetchCognitive', () => {
-    it('returns null (stub)', async () => {
-      const result = await provider.fetchCognitive('https://mintlify.com/docs/path');
-      expect(result).toBeNull();
+    it('throws ProviderNotImplementedError', async () => {
+      await expect(provider.fetchCognitive('https://mintlify.com/docs/path')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
+    });
+
+    it('includes provider id in error', async () => {
+      await expect(provider.fetchCognitive('https://mintlify.com/docs/path')).rejects.toThrow(
+        'mintlify',
+      );
     });
   });
 
   describe('fetchAll', () => {
-    it('returns empty array (stub)', async () => {
-      const result = await provider.fetchAll('https://mintlify.com/docs/path');
-      expect(result).toEqual([]);
+    it('throws ProviderNotImplementedError', async () => {
+      await expect(provider.fetchAll('https://mintlify.com/docs/path')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
   });
 

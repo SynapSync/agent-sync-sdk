@@ -26,7 +26,7 @@ describe('readWithMigration()', () => {
     expect(result.version).toBe(CURRENT_LOCK_VERSION);
     expect(result.cognitives['test-skill']).toBeDefined();
     // No migration events should be emitted
-    const migrateEvents = eventBus.events.filter(e => e.event === 'lock:migrate');
+    const migrateEvents = eventBus.events.filter((e) => e.event === 'lock:migrate');
     expect(migrateEvents.length).toBe(0);
   });
 
@@ -57,7 +57,7 @@ describe('readWithMigration()', () => {
     expect(result.lastSelectedAgents).toEqual(['cursor']);
 
     // Should emit migration event
-    const migrateEvents = eventBus.events.filter(e => e.event === 'lock:migrate');
+    const migrateEvents = eventBus.events.filter((e) => e.event === 'lock:migrate');
     expect(migrateEvents.length).toBe(1);
     expect((migrateEvents[0]!.payload as { fromVersion: number }).fromVersion).toBe(3);
   });
@@ -92,7 +92,7 @@ describe('readWithMigration()', () => {
     expect(entry!.cognitivePath).toBe('/agents/test');
     expect(result.lastSelectedAgents).toEqual(['claude-code']);
 
-    const migrateEvents = eventBus.events.filter(e => e.event === 'lock:migrate');
+    const migrateEvents = eventBus.events.filter((e) => e.event === 'lock:migrate');
     expect(migrateEvents.length).toBe(1);
   });
 

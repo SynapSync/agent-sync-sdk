@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import type { AgentRegistry, AgentType } from '../types/agent.js';
+import type { AgentRegistry } from '../types/agent.js';
 import type { FileSystemAdapter } from '../types/config.js';
 import type { CognitiveType } from '../types/cognitive.js';
 import type { EventBus } from '../types/events.js';
@@ -26,11 +26,7 @@ export class InstallerImpl implements Installer {
   private readonly fs: FileSystemAdapter;
   private readonly eventBus: EventBus;
 
-  constructor(
-    agentRegistry: AgentRegistry,
-    fs: FileSystemAdapter,
-    eventBus: EventBus,
-  ) {
+  constructor(agentRegistry: AgentRegistry, fs: FileSystemAdapter, eventBus: EventBus) {
     this.agentRegistry = agentRegistry;
     this.fs = fs;
     this.eventBus = eventBus;

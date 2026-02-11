@@ -5,6 +5,9 @@ coverage/
 .env.*
 *.tsbuildinfo
 
+# Local test apps
+apps/
+
 #AI
 .agents/
 .agent/

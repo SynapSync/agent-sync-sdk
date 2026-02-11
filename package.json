@@ -15,12 +15,14 @@
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "build": "tsup",
     "test": "vitest",
     "test:run": "vitest run",
-    "compile-agents": "tsx src/agents/definitions/compile.ts",
-    "prebuild": "pnpm run compile-agents",
+    "compile-agents": "tsx src/agents/compile/compile.ts",
+    "compile-agents:quiet": "tsx src/agents/compile/compile.ts --quiet",
+    "prebuild": "pnpm run compile-agents:quiet",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"
   },

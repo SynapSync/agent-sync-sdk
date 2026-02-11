@@ -11,27 +11,33 @@ import { createEmptyLockFile, validateLockFile } from './schema.js';
 
 interface LockFileV3 {
   version: 3;
-  skills: Record<string, {
-    source: string;
-    sourceType: string;
-    installedAt: string;
-    updatedAt: string;
-  }>;
+  skills: Record<
+    string,
+    {
+      source: string;
+      sourceType: string;
+      installedAt: string;
+      updatedAt: string;
+    }
+  >;
   lastSelectedAgents?: string[];
 }
 
 interface LockFileV4 {
   version: 4;
-  cognitives: Record<string, {
-    source: string;
-    sourceType: string;
-    sourceUrl: string;
-    cognitivePath?: string;
-    cognitiveType?: string;
-    cognitiveFolderHash: string;
-    installedAt: string;
-    updatedAt: string;
-  }>;
+  cognitives: Record<
+    string,
+    {
+      source: string;
+      sourceType: string;
+      sourceUrl: string;
+      cognitivePath?: string;
+      cognitiveType?: string;
+      cognitiveFolderHash: string;
+      installedAt: string;
+      updatedAt: string;
+    }
+  >;
   lastSelectedAgents?: string[];
   dismissed?: { findSkillsPrompt?: boolean };
 }

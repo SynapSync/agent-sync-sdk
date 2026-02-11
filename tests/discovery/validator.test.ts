@@ -5,14 +5,16 @@ import { isOk, isErr } from '../../src/types/result.js';
 import type { Cognitive, CognitiveType } from '../../src/types/cognitive.js';
 import type { CognitiveName } from '../../src/types/brands.js';
 
-function makeCognitive(overrides: Partial<{
-  name: string;
-  type: string;
-  path: string;
-  description: string;
-  rawContent: string;
-  metadata: Record<string, unknown>;
-}>): Cognitive {
+function makeCognitive(
+  overrides: Partial<{
+    name: string;
+    type: string;
+    path: string;
+    description: string;
+    rawContent: string;
+    metadata: Record<string, unknown>;
+  }>,
+): Cognitive {
   return {
     name: 'test-cognitive' as CognitiveName,
     type: 'skill' as CognitiveType,

@@ -176,7 +176,7 @@ describe('InstallerImpl', () => {
       expect(result.success).toBe(true);
       expect(result.mode).toBe('copy');
       // Should have emitted install:copy event
-      const copyEvents = eventBus.events.filter(e => e.event === 'install:copy');
+      const copyEvents = eventBus.events.filter((e) => e.event === 'install:copy');
       expect(copyEvents.length).toBeGreaterThan(0);
     });
 
@@ -197,7 +197,9 @@ describe('InstallerImpl', () => {
         rename: (o, n) => baseFs.rename(o, n),
         exists: (p) => baseFs.exists(p),
         copyDirectory: (s, t) => baseFs.copyDirectory(s, t),
-        symlink: async () => { throw new Error('symlink not supported'); },
+        symlink: async () => {
+          throw new Error('symlink not supported');
+        },
       };
 
       const registry = createMockAgentRegistry({
@@ -249,8 +251,8 @@ describe('InstallerImpl', () => {
 
       await installer.install(request, target, options);
 
-      const startEvents = eventBus.events.filter(e => e.event === 'install:start');
-      const completeEvents = eventBus.events.filter(e => e.event === 'install:complete');
+      const startEvents = eventBus.events.filter((e) => e.event === 'install:start');
+      const completeEvents = eventBus.events.filter((e) => e.event === 'install:complete');
       expect(startEvents.length).toBe(1);
       expect(completeEvents.length).toBe(1);
     });

@@ -191,7 +191,13 @@ export interface CheckResult {
 }
 
 export type CheckSeverity = 'error' | 'warning';
-export type CheckIssueType = 'missing_canonical' | 'missing_agent_dir' | 'broken_symlink' | 'hash_mismatch' | 'lock_orphan' | 'filesystem_orphan';
+export type CheckIssueType =
+  | 'missing_canonical'
+  | 'missing_agent_dir'
+  | 'broken_symlink'
+  | 'hash_mismatch'
+  | 'lock_orphan'
+  | 'filesystem_orphan';
 
 export interface CheckIssue {
   readonly name: string;

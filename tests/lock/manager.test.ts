@@ -119,6 +119,83 @@ describe('LockFileManagerImpl', () => {
     });
   });
 
+  describe('concurrency (write lock)', () => {
+    it('concurrent addEntry calls preserve all entries', async () => {
+      const entries = Array.from({ length: 10 }, (_, i) => ({
+        name: `skill-${i}`,
+        data: {
+          ...makeEntryData(),
+          source: sourceIdentifier(`owner/repo-${i}`),
+        },
+      }));
+
+      // Fire all addEntry calls concurrently
+      await Promise.all(entries.map(({ name, data }) => manager.addEntry(name, data)));
+
+      const all = await manager.getAllEntries();
+      expect(Object.keys(all)).toHaveLength(10);
+
+      for (const { name } of entries) {
+        expect(all[name]).toBeDefined();
+      }
+    });
+
+    it('concurrent addEntry and removeEntry are serialized', async () => {
+      // Pre-populate an entry
+      await manager.addEntry('existing', makeEntryData());
+
+      // Concurrently: add a new entry AND remove the existing one
+      const [, removed] = await Promise.all([
+        manager.addEntry('new-skill', makeEntryData()),
+        manager.removeEntry('existing'),
+      ]);
+
+      expect(removed).toBe(true);
+
+      const all = await manager.getAllEntries();
+      expect(all['existing']).toBeUndefined();
+      expect(all['new-skill']).toBeDefined();
+    });
+
+    it('concurrent saveLastSelectedAgents and addEntry are serialized', async () => {
+      await Promise.all([
+        manager.addEntry('skill-a', makeEntryData()),
+        manager.saveLastSelectedAgents(['cursor', 'claude-code']),
+        manager.addEntry('skill-b', { ...makeEntryData(), source: sourceIdentifier('other/repo') }),
+      ]);
+
+      const all = await manager.getAllEntries();
+      expect(all['skill-a']).toBeDefined();
+      expect(all['skill-b']).toBeDefined();
+
+      const agents = await manager.getLastSelectedAgents();
+      expect(agents).toEqual(['cursor', 'claude-code']);
+    });
+
+    it('error in one write does not block subsequent writes', async () => {
+      // Force a write error by making fs.writeFile throw once
+      const originalWriteFile = memFs.writeFile.bind(memFs);
+      let shouldFail = true;
+      memFs.writeFile = async (...args: Parameters<typeof memFs.writeFile>) => {
+        if (shouldFail) {
+          shouldFail = false;
+          throw new Error('Simulated write failure');
+        }
+        return originalWriteFile(...args);
+      };
+
+      // First addEntry should fail
+      await expect(manager.addEntry('fail-skill', makeEntryData())).rejects.toThrow(
+        'Simulated write failure',
+      );
+
+      // Second addEntry should succeed (lock released in finally)
+      await manager.addEntry('ok-skill', makeEntryData());
+      const entry = await manager.getEntry('ok-skill');
+      expect(entry).not.toBeNull();
+    });
+  });
+
   describe('lastSelectedAgents', () => {
     it('returns undefined when no agents have been saved', async () => {
       const agents = await manager.getLastSelectedAgents();

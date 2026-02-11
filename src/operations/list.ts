@@ -1,45 +1,11 @@
 import type { CognitError } from '../errors/base.js';
-import type {
-  ListOptions,
-  ListResult,
-  ListedCognitive,
-} from '../types/operations.js';
+import type { ListOptions, ListResult, ListedCognitive } from '../types/operations.js';
 import type { Result } from '../types/result.js';
-import type { OperationContext } from './context.js';
-import { ok, err } from '../types/result.js';
-import { OperationError } from '../errors/operation.js';
+import { BaseOperation } from './base.js';
 
-export class ListOperation {
-  constructor(private readonly ctx: OperationContext) {}
-
-  async execute(
-    options?: Partial<ListOptions>,
-  ): Promise<Result<ListResult, CognitError>> {
-    const start = Date.now();
-    this.ctx.eventBus.emit('operation:start', { operation: 'list', options });
-
-    try {
-      const result = await this.run(options);
-      this.ctx.eventBus.emit('operation:complete', {
-        operation: 'list',
-        result,
-        durationMs: Date.now() - start,
-      });
-      return ok(result);
-    } catch (error) {
-      const opError =
-        error instanceof OperationError
-          ? error
-          : new OperationError(
-              error instanceof Error ? error.message : String(error),
-              ...(error instanceof Error ? [{ cause: error }] : []),
-            );
-      this.ctx.eventBus.emit('operation:error', {
-        operation: 'list',
-        error: opError,
-      });
-      return err(opError);
-    }
+export class ListOperation extends BaseOperation {
+  async execute(options?: Partial<ListOptions>): Promise<Result<ListResult, CognitError>> {
+    return this.executeWithLifecycle('list', options, () => this.run(options));
   }
 
   private async run(options?: Partial<ListOptions>): Promise<ListResult> {
@@ -69,9 +35,7 @@ export class ListOperation {
 
     const count = cognitives.length;
     const message =
-      count > 0
-        ? `Found ${count} installed cognitive(s).`
-        : 'No cognitives installed.';
+      count > 0 ? `Found ${count} installed cognitive(s).` : 'No cognitives installed.';
 
     return { success: true, cognitives, count, message };
   }

@@ -13,14 +13,22 @@ import type { CognitiveType } from './types/cognitive.js';
 import type { CognitError } from './errors/base.js';
 import type { Result } from './types/result.js';
 import type {
-  AddOptions, AddResult,
-  RemoveOptions, RemoveResult,
-  ListOptions, ListResult,
-  FindOptions, FindResult,
-  UpdateOptions, UpdateResult,
-  SyncOptions, SyncResult,
-  CheckOptions, CheckResult,
-  InitOptions, InitResult,
+  AddOptions,
+  AddResult,
+  RemoveOptions,
+  RemoveResult,
+  ListOptions,
+  ListResult,
+  FindOptions,
+  FindResult,
+  UpdateOptions,
+  UpdateResult,
+  SyncOptions,
+  SyncResult,
+  CheckOptions,
+  CheckResult,
+  InitOptions,
+  InitResult,
 } from './types/operations.js';
 import type { OperationContext } from './operations/context.js';
 
@@ -56,13 +64,20 @@ import { InitOperation } from './operations/init.js';
 export interface AgentSyncSDK {
   // Operations
   add(source: string, options?: Partial<AddOptions>): Promise<Result<AddResult, CognitError>>;
-  remove(names: readonly string[], options?: Partial<RemoveOptions>): Promise<Result<RemoveResult, CognitError>>;
+  remove(
+    names: readonly string[],
+    options?: Partial<RemoveOptions>,
+  ): Promise<Result<RemoveResult, CognitError>>;
   list(options?: Partial<ListOptions>): Promise<Result<ListResult, CognitError>>;
   find(source: string, options?: Partial<FindOptions>): Promise<Result<FindResult, CognitError>>;
   update(options?: Partial<UpdateOptions>): Promise<Result<UpdateResult, CognitError>>;
   sync(options?: Partial<SyncOptions>): Promise<Result<SyncResult, CognitError>>;
   check(options?: Partial<CheckOptions>): Promise<Result<CheckResult, CognitError>>;
-  init(name: string, cognitiveType: CognitiveType, options?: Partial<InitOptions>): Promise<Result<InitResult, CognitError>>;
+  init(
+    name: string,
+    cognitiveType: CognitiveType,
+    options?: Partial<InitOptions>,
+  ): Promise<Result<InitResult, CognitError>>;
 
   // Accessors
   readonly events: EventBus;
@@ -71,8 +86,14 @@ export interface AgentSyncSDK {
   readonly providers: ProviderRegistry;
 
   // Event subscription convenience
-  on<K extends keyof SDKEventMap>(event: K, handler: (payload: SDKEventMap[K]) => void): Unsubscribe;
-  once<K extends keyof SDKEventMap>(event: K, handler: (payload: SDKEventMap[K]) => void): Unsubscribe;
+  on<K extends keyof SDKEventMap>(
+    event: K,
+    handler: (payload: SDKEventMap[K]) => void,
+  ): Unsubscribe;
+  once<K extends keyof SDKEventMap>(
+    event: K,
+    handler: (payload: SDKEventMap[K]) => void,
+  ): Unsubscribe;
 
   // Lifecycle
   dispose(): Promise<void>;
@@ -100,6 +121,8 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
   readonly providers: ProviderRegistry;
 
   private readonly ops: OperationMap;
+  private readonly cleanup: () => void;
+  private disposed = false;
 
   constructor(
     config: Readonly<SDKConfig>,
@@ -107,12 +130,14 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
     ops: OperationMap,
     agentRegistry: AgentRegistry,
     providerRegistry: ProviderRegistry,
+    cleanup: () => void,
   ) {
     this.config = config;
     this.events = eventBus;
     this.ops = ops;
     this.agents = agentRegistry;
     this.providers = providerRegistry;
+    this.cleanup = cleanup;
   }
 
   // -- Operations --
@@ -121,7 +146,10 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
     return this.ops.add.execute(source, options);
   }
 
-  remove(names: readonly string[], options?: Partial<RemoveOptions>): Promise<Result<RemoveResult, CognitError>> {
+  remove(
+    names: readonly string[],
+    options?: Partial<RemoveOptions>,
+  ): Promise<Result<RemoveResult, CognitError>> {
     return this.ops.remove.execute(names, options);
   }
 
@@ -145,24 +173,36 @@ class AgentSyncSDKImpl implements AgentSyncSDK {
     return this.ops.check.execute(options);
   }
 
-  init(name: string, cognitiveType: CognitiveType, options?: Partial<InitOptions>): Promise<Result<InitResult, CognitError>> {
+  init(
+    name: string,
+    cognitiveType: CognitiveType,
+    options?: Partial<InitOptions>,
+  ): Promise<Result<InitResult, CognitError>> {
     return this.ops.init.execute(name, cognitiveType, options);
   }
 
   // -- Event subscription convenience --
 
-  on<K extends keyof SDKEventMap>(event: K, handler: (payload: SDKEventMap[K]) => void): Unsubscribe {
+  on<K extends keyof SDKEventMap>(
+    event: K,
+    handler: (payload: SDKEventMap[K]) => void,
+  ): Unsubscribe {
     return this.events.on(event, handler);
   }
 
-  once<K extends keyof SDKEventMap>(event: K, handler: (payload: SDKEventMap[K]) => void): Unsubscribe {
+  once<K extends keyof SDKEventMap>(
+    event: K,
+    handler: (payload: SDKEventMap[K]) => void,
+  ): Unsubscribe {
     return this.events.once(event, handler);
   }
 
   // -- Lifecycle --
 
   async dispose(): Promise<void> {
-    // Future: cancel in-flight operations, cleanup caches
+    if (this.disposed) return;
+    this.disposed = true;
+    this.cleanup();
   }
 }
 
@@ -190,13 +230,15 @@ export function createAgentSyncSDK(userConfig?: Partial<SDKConfig>): AgentSyncSD
   }
 
   // GitHub and Local need constructor dependencies
-  providerRegistry.register(new GitHubProvider(gitClient, discoveryService, eventBus));
+  providerRegistry.register(
+    new GitHubProvider(gitClient, discoveryService, eventBus, config.fetchTimeoutMs),
+  );
   providerRegistry.register(new LocalProvider(config.fs, discoveryService, eventBus, config.cwd));
 
-  // Stub providers (no constructor args)
+  // Stub providers (not yet implemented — throw ProviderNotImplementedError on fetch)
   providerRegistry.register(new MintlifyProvider());
   providerRegistry.register(new HuggingFaceProvider());
-  providerRegistry.register(new WellKnownProvider());
+  providerRegistry.register(new WellKnownProvider(config.fetchTimeoutMs));
   providerRegistry.register(new DirectURLProvider());
 
   // Layer 4: Installer & Lock
@@ -229,5 +271,9 @@ export function createAgentSyncSDK(userConfig?: Partial<SDKConfig>): AgentSyncSD
 
   eventBus.emit('sdk:initialized', { configHash: '' });
 
-  return new AgentSyncSDKImpl(config, eventBus, ops, agentRegistry, providerRegistry);
+  const cleanup = () => {
+    eventBus.clear();
+  };
+
+  return new AgentSyncSDKImpl(config, eventBus, ops, agentRegistry, providerRegistry, cleanup);
 }

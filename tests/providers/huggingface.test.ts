@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { HuggingFaceProvider } from '../../src/providers/huggingface.js';
+import { ProviderNotImplementedError } from '../../src/errors/provider.js';
 
 describe('HuggingFaceProvider', () => {
   const provider = new HuggingFaceProvider();
@@ -33,16 +34,24 @@ describe('HuggingFaceProvider', () => {
   });
 
   describe('fetchCognitive', () => {
-    it('returns null (stub)', async () => {
-      const result = await provider.fetchCognitive('https://huggingface.co/owner/repo');
-      expect(result).toBeNull();
+    it('throws ProviderNotImplementedError', async () => {
+      await expect(provider.fetchCognitive('https://huggingface.co/owner/repo')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
+    });
+
+    it('includes provider id in error', async () => {
+      await expect(provider.fetchCognitive('https://huggingface.co/owner/repo')).rejects.toThrow(
+        'huggingface',
+      );
     });
   });
 
   describe('fetchAll', () => {
-    it('returns empty array (stub)', async () => {
-      const result = await provider.fetchAll('https://huggingface.co/owner/repo');
-      expect(result).toEqual([]);
+    it('throws ProviderNotImplementedError', async () => {
+      await expect(provider.fetchAll('https://huggingface.co/owner/repo')).rejects.toThrow(
+        ProviderNotImplementedError,
+      );
     });
   });
 

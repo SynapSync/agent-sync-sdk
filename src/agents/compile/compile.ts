@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-// src/agents/definitions/compile.ts
+// src/agents/compile/compile.ts
 // Reads *.yaml definitions from this directory, generates TypeScript files
 // in src/agents/__generated__/.
 
@@ -45,8 +45,9 @@ interface ResolvedAgent {
 
 // ---------- Paths ----------
 
-const DEFINITIONS_DIR = import.meta.dirname ?? join(process.cwd(), 'src', 'agents', 'definitions');
-const OUT_DIR = join(DEFINITIONS_DIR, '..', '__generated__');
+const COMPILE_DIR = import.meta.dirname ?? join(process.cwd(), 'src', 'agents', 'compile');
+const DEFINITIONS_DIR = join(COMPILE_DIR, '..', 'definitions');
+const OUT_DIR = join(COMPILE_DIR, '..', '__generated__');
 
 const HEADER = '// AUTO-GENERATED -- DO NOT EDIT\n';
 
@@ -67,7 +68,9 @@ function loadCognitiveTypes(): CognitiveTypeYaml[] {
 }
 
 function loadAgents(): AgentYaml[] {
-  const files = readdirSync(DEFINITIONS_DIR).filter((f) => f.endsWith('.yaml') && f !== 'cognitive-types.yaml').sort();
+  const files = readdirSync(DEFINITIONS_DIR)
+    .filter((f) => f.endsWith('.yaml') && f !== 'cognitive-types.yaml')
+    .sort();
   const agents: AgentYaml[] = [];
   const seen = new Set<string>();
 
@@ -191,7 +194,9 @@ function generateAgents(agents: ResolvedAgent[], cognitiveTypes: CognitiveTypeYa
     lines.push(`    dirs: {`);
     for (const ct of cognitiveTypes) {
       const dir = agent.dirs[ct.type]!;
-      lines.push(`      ${ct.type}: { local: '${dir.local}', global: ${dir.global ? `'${dir.global}'` : 'undefined'} },`);
+      lines.push(
+        `      ${ct.type}: { local: '${dir.local}', global: ${dir.global ? `'${dir.global}'` : 'undefined'} },`,
+      );
     }
     lines.push(`    },`);
     lines.push(`  },`);
@@ -211,16 +216,19 @@ function generateAgents(agents: ResolvedAgent[], cognitiveTypes: CognitiveTypeYa
 
 // ---------- Main ----------
 
+const quiet = process.argv.includes('--quiet');
+const log = quiet ? () => {} : console.log.bind(console);
+
 function main(): void {
-  console.log('compile-agents: loading cognitive types...');
+  log('compile-agents: loading cognitive types...');
   const cognitiveTypes = loadCognitiveTypes();
-  console.log(`  loaded ${cognitiveTypes.length} cognitive types`);
+  log(`  loaded ${cognitiveTypes.length} cognitive types`);
 
-  console.log('compile-agents: loading agent definitions...');
+  log('compile-agents: loading agent definitions...');
   const agents = loadAgents();
-  console.log(`  loaded ${agents.length} agents`);
+  log(`  loaded ${agents.length} agents`);
 
-  console.log('compile-agents: resolving conventions...');
+  log('compile-agents: resolving conventions...');
   const resolved = agents.map((a) => resolveAgent(a, cognitiveTypes));
 
   // Ensure output directory exists
@@ -228,13 +236,13 @@ function main(): void {
     mkdirSync(OUT_DIR, { recursive: true });
   }
 
-  console.log('compile-agents: generating agent-type.ts...');
+  log('compile-agents: generating agent-type.ts...');
   writeFileSync(join(OUT_DIR, 'agent-type.ts'), generateAgentType(resolved), 'utf-8');
 
-  console.log('compile-agents: generating agents.ts...');
+  log('compile-agents: generating agents.ts...');
   writeFileSync(join(OUT_DIR, 'agents.ts'), generateAgents(resolved, cognitiveTypes), 'utf-8');
 
-  console.log(`compile-agents: done! Generated 2 files in ${OUT_DIR}`);
+  log(`compile-agents: done! Generated 2 files in ${OUT_DIR}`);
 }
 
 main();

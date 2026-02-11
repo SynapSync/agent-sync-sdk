@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { OperationContext } from '../../src/operations/context.js';
 import type { AgentRegistry } from '../../src/types/agent.js';
-import type { ProviderRegistry, SourceParser, GitClient, SourceDescriptor } from '../../src/types/source.js';
+import type {
+  ProviderRegistry,
+  SourceParser,
+  GitClient,
+  SourceDescriptor,
+} from '../../src/types/source.js';
 import type { DiscoveryService } from '../../src/discovery/index.js';
 import type { Installer } from '../../src/types/install.js';
 import type { LockManager } from '../../src/types/lock.js';
@@ -83,7 +88,6 @@ function createMockContext(overrides?: Partial<OperationContext>): OperationCont
     git: { cloneTimeoutMs: 30000, depth: 1 },
     providers: { custom: [] },
     agents: { additional: [] },
-    telemetry: { enabled: false },
   };
 
   return {

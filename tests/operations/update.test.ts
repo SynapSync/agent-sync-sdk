@@ -1,7 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { OperationContext } from '../../src/operations/context.js';
 import type { AgentRegistry, AgentType, AgentDetectionResult } from '../../src/types/agent.js';
-import type { ProviderRegistry, SourceParser, GitClient, HostProvider, SourceDescriptor } from '../../src/types/source.js';
+import type {
+  ProviderRegistry,
+  SourceParser,
+  GitClient,
+  HostProvider,
+  SourceDescriptor,
+} from '../../src/types/source.js';
 import type { DiscoveryService } from '../../src/discovery/index.js';
 import type { Installer } from '../../src/types/install.js';
 import type { LockManager, LockEntry } from '../../src/types/lock.js';
@@ -86,7 +92,6 @@ function createMockContext(overrides?: Partial<OperationContext>): OperationCont
     git: { cloneTimeoutMs: 30000, depth: 1 },
     providers: { custom: [] },
     agents: { additional: [] },
-    telemetry: { enabled: false },
   };
 
   return {
@@ -230,7 +235,12 @@ describe('UpdateOperation', () => {
     const provider = makeMockProvider([makeUpdatedRemote()]);
 
     const installedAgents: AgentDetectionResult[] = [
-      { agent: 'claude-code' as AgentType, displayName: 'Claude Code', installed: true, isUniversal: false },
+      {
+        agent: 'claude-code' as AgentType,
+        displayName: 'Claude Code',
+        installed: true,
+        isUniversal: false,
+      },
     ];
 
     let removeCalled = false;
@@ -243,7 +253,9 @@ describe('UpdateOperation', () => {
         getAllEntries: async () => ({
           'test-skill': makeLockEntry(originalHash),
         }),
-        addEntry: async () => { addEntryCalled = true; },
+        addEntry: async () => {
+          addEntryCalled = true;
+        },
       },
       providerRegistry: {
         register: () => {},
@@ -266,7 +278,10 @@ describe('UpdateOperation', () => {
             mode: target.mode,
           };
         },
-        remove: async () => { removeCalled = true; return true; },
+        remove: async () => {
+          removeCalled = true;
+          return true;
+        },
       },
     });
 
@@ -383,7 +398,9 @@ describe('UpdateOperation', () => {
     ctx = createMockContext({
       lockManager: {
         ...ctx.lockManager,
-        getAllEntries: async () => { throw new Error('DB connection failed'); },
+        getAllEntries: async () => {
+          throw new Error('DB connection failed');
+        },
       },
     });
 
@@ -392,7 +409,7 @@ describe('UpdateOperation', () => {
 
     expect(isErr(result)).toBe(true);
     if (!isErr(result)) return;
-    expect(result.error.message).toBe('Update operation failed');
+    expect(result.error.message).toBe('DB connection failed');
   });
 
   it('returns success=false when there are errors and success=true when none', async () => {

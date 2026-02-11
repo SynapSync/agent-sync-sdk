@@ -15,7 +15,11 @@ function createMockRegistry(): AgentRegistry {
     isUniversal(type: AgentType, _cognitiveType?: CognitiveType): boolean {
       return type === ('codex' as AgentType);
     },
-    getDir(type: AgentType, cognitiveType: CognitiveType, scope: 'local' | 'global'): string | undefined {
+    getDir(
+      type: AgentType,
+      cognitiveType: CognitiveType,
+      scope: 'local' | 'global',
+    ): string | undefined {
       if (type === ('codex' as AgentType)) return undefined;
       const base = scope === 'local' ? '/project/.agents' : '/home/.agents';
       return `${base}/${type}/${cognitiveType}s`;
